@@ -61,6 +61,13 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 - [ ] Gun viewmodel + muzzle flash (needs a gun model asset)
 - [ ] Sound (gunshot / reload / hit) — needs audio asset IDs
 
+## Weapon system (modular) ✅
+- [x] Data-driven GunDef + GunRegistry (Weapons/Enums/Types/Ballistics); fire-behavior strategies (Hitscan/Shotgun/Projectile)
+- [x] Spread (spray) accuracy + bloom = real mechanic; per-gun visual recoil (up, snappy); RPM cooldown; penetration + falloff
+- [x] Camera-origin aim (bullets hit the crosshair); hide cursor; fire modes (auto/semi/single/burst)
+- [x] Starter guns: M1911 · M16 · AK74u · Olympia · RPK · Ray Gun. Verified: registry valid, hitscan damage, RPK pierces 2
+- [ ] Backlog: add the rest of the COD roster as GunDef data; exotic behaviors (Melee/grenades/Thundergun); per-gun models/sounds/anims; Pack-a-Punch upgrades (Epic 3)
+
 ## Next options
 - [ ] Wall-buys (Sprint 4b): arena buy spots + Buy remote → points SPEND
 - [ ] Upload the 6 zombie animations → AnimationId (production playback)

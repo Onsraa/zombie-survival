@@ -79,9 +79,18 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
   as `Animation` objects (with `AnimationId`). The controller loads either form, pcall-guarded, so a
   missing animation never breaks a zombie.
 - **`RoundService`** (server): co-op wave state machine; broadcasts `RoundState` (change-based) for the HUD.
-- **`WeaponService`** (server): server-authoritative raycast shooting — the client sends only an aim
-  *direction*; the server raycasts, applies damage (+headshot), manages ammo/reload, and awards points
-  via `damageZombie`. `WeaponController` (client) handles input (desktop mouse + mobile touch).
+- **Weapons (modular, data-driven)**: guns are `GunDef` entries in `shared/Weapons/Guns/*` (by category),
+  aggregated by `GunRegistry`. Each has fire mode, RPM, damage, penetration, **spread** (an accuracy cone
+  that blooms with sustained fire — the real COD accuracy mechanic), a per-gun visual **recoil** profile,
+  ammo, a Pack-a-Punch-ready `upgrade` field, and asset placeholders. Pure math is in `Weapons/Ballistics`
+  (Lune-tested). Adding a standard gun = one data entry; exotic guns = a data entry + a fire behavior.
+- **`WeaponService`** (server): per-player state, RPM cooldown, spread bloom, **camera-origin raycast**
+  (origin validated near the head, so shots land on the crosshair), then dispatch to a **fire behavior**
+  by `fireType` (`FireBehaviors/`: Hitscan w/ penetration · Shotgun pellets · Projectile/Ray-Gun AoE).
+  Client sends `{ origin, direction }`; server stays authoritative and awards points via `damageZombie`.
+- **`WeaponController` / `WeaponEffects`** (client): input + fire modes (auto/semi/single/burst); recoil
+  is a snappy *visual* kick (animation, not accuracy); tracers/impacts are cosmetic. `CameraController`
+  locks first-person and hides the OS cursor (the crosshair is the aim point).
 
 ## Conventions / quality gates
 - `--!strict` on module APIs; no type escape hatches.
