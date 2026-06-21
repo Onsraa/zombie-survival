@@ -48,6 +48,7 @@ local function init()
 
 	-- Start client controllers.
 	require(script.Parent.Controllers.CameraController).start()
+	require(script.Parent.Controllers.MovementController).start()
 	require(script.Parent.Controllers.WeaponController).start()
 
 	print("[ClientController] Initialized")

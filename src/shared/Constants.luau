@@ -11,9 +11,12 @@ local Constants = {
 	INTERMISSION_TIME = 10,
 	ROUND_START_DELAY = 3,
 
-	-- Player defaults
+	-- Player defaults + movement stances (studs/sec)
 	MAX_HEALTH = 100,
 	WALK_SPEED = 16,
+	SPRINT_SPEED = 22,
+	CROUCH_SPEED = 8,
+	PRONE_SPEED = 4,
 
 	-- Remote security (consumed by RemoteHandler)
 	MAX_REMOTE_RATE = 30, -- max fires per window before rate-limiting
