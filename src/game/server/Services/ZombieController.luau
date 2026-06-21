@@ -2,9 +2,9 @@
 --[[
 	ZombieController.luau
 	Per-zombie visual/state controller: animation playback (walk/run/crawl/attack/
-	remove-planks), and health-driven gore (head detaches < 15% HP, legs detach
-	< 40% HP and the zombie switches to crawling). Ragdolled parts pop off and clean
-	up after a delay.
+	remove-planks), and gore: the head detaches near death (< 15% HP); the legs are
+	blown off by explosions (ZombieService.explode -> :DetachLegs()), switching the
+	zombie to crawling. Ragdolled parts pop off and clean up after a delay.
 
 	Ported from the in-place prototype with two fixes:
 	  - No yields at require time (SE-8): assets are resolved inside methods.
@@ -13,7 +13,8 @@
 	    pcall-guarded so a missing/unuploaded animation never breaks the zombie.
 
 	Drive it from the server AI (ZombieService): :Walk()/:Run() while moving,
-	:Attack() on a melee hit. Health changes trigger detachment automatically.
+	:Attack() on a melee hit. The head detaches automatically near death; legs detach
+	on explosion via :DetachLegs().
 
 	NOTE: KeyframeSequenceProvider IDs are temporary and Studio-only. For animations
 	to play in a published game, upload the 6 KeyframeSequences and reference them as
@@ -35,7 +36,6 @@ local STATE = {
 }
 
 local HEAD_DETACH_THRESHOLD = 0.15
-local LEGS_DETACH_THRESHOLD = 0.40
 local PART_CLEANUP_DELAY = 5
 
 local ZombieController = {}
@@ -174,13 +174,10 @@ function ZombieController.SetupDamageDetection(self: ZombieController)
 	end
 
 	self._connection = humanoid.HealthChanged:Connect(function(health: number)
-		local percent = health / math.max(humanoid.MaxHealth, 1)
-
-		if percent < HEAD_DETACH_THRESHOLD and not self.HeadDetached then
+		-- Head pops near death. Legs come off only from explosions (ZombieService.explode),
+		-- so a crawling zombie always means "took a blast", never just "low HP".
+		if health / math.max(humanoid.MaxHealth, 1) < HEAD_DETACH_THRESHOLD and not self.HeadDetached then
 			self:DetachHead()
-		end
-		if percent < LEGS_DETACH_THRESHOLD and not self.LegsDetached then
-			self:DetachLegs()
 		end
 		if health <= 0 then
 			self:SetState(STATE.DEAD)

@@ -64,6 +64,8 @@ export type FireContext = {
 	character: Instance, -- excluded from raycasts
 	damageZombie: (model: Model, damage: number, killer: Player?) -> (),
 	reportHit: (headshot: boolean) -> (), -- call once if the shot connected (HUD marker)
+	-- AoE: damage + blow the legs off (→ crawl) for zombies in the blast. Returns hit count.
+	explode: (position: Vector3, radius: number, damage: number, killer: Player?) -> number,
 }
 
 return nil

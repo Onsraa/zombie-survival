@@ -43,18 +43,4 @@ function Util.getZombieFromPart(part: BasePart): Model?
 	return nil
 end
 
--- Living zombie models whose root is within `radius` of `pos` (for AoE weapons).
-function Util.getZombiesInRadius(pos: Vector3, radius: number): { Model }
-	local hits: { Model } = {}
-	for _, z in CollectionService:GetTagged(Constants.Tags.Zombie) do
-		if z:IsA("Model") then
-			local root = z:FindFirstChild("HumanoidRootPart")
-			if root and root:IsA("BasePart") and (root.Position - pos).Magnitude <= radius then
-				table.insert(hits, z)
-			end
-		end
-	end
-	return hits
-end
-
 return Util

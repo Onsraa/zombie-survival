@@ -5,7 +5,7 @@
 	owned models in Workspace, so their movement auto-replicates to clients with no
 	per-frame remotes. Difficulty (health/speed/count/cap) comes from ZombieConfig.
 	Each zombie runs a throttled, staggered pathfinding chase and is paired with a
-	ZombieController (animations + health-driven gore/crawl).
+	ZombieController (animations + gore; legs blow off via explode() → crawl).
 
 	Template: cloned from ReplicatedStorage.Assets.Models.Zombie (themed, Motor6D rig).
 
@@ -289,6 +289,23 @@ function ZombieService.damageZombie(model: Model, amount: number, killer: Player
 			SessionService.addKill(killer)
 		end
 	end
+end
+
+-- AoE blast (grenades / Ray Gun ground shots): blow the legs off (→ crawl) and
+-- damage every living zombie within `radius` of `position`. The leg gore comes from
+-- the impact zone, not a health threshold. Returns how many were hit (HUD marker).
+function ZombieService.explode(position: Vector3, radius: number, damage: number, killer: Player?): number
+	local count = 0
+	for model, record in alive do
+		local root = getRoot(model)
+		local humanoid = getHumanoid(model)
+		if root and humanoid and humanoid.Health > 0 and (root.Position - position).Magnitude <= radius then
+			record.controller:DetachLegs()
+			ZombieService.damageZombie(model, damage, killer)
+			count += 1
+		end
+	end
+	return count
 end
 
 function ZombieService.getAliveCount(): number

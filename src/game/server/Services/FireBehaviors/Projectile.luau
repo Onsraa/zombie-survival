@@ -23,13 +23,8 @@ function Projectile.fire(ctx: Types.FireContext)
 	local result = Workspace:Raycast(ctx.origin, dir * gun.range, Util.makeParams({ ctx.character }))
 	local impact = if result then result.Position else ctx.origin + dir * gun.range
 
-	local connected = false
-	for _, zombie in Util.getZombiesInRadius(impact, SPLASH_RADIUS) do
-		ctx.damageZombie(zombie, gun.damage, ctx.player)
-		connected = true
-	end
-
-	if connected then
+	-- Blast the impact zone: damage + blow legs off (→ crawl) for zombies in radius.
+	if ctx.explode(impact, SPLASH_RADIUS, gun.damage, ctx.player) > 0 then
 		ctx.reportHit(false)
 	end
 end

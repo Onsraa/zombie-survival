@@ -129,6 +129,7 @@ local function onShoot(player: Player, payload: any)
 			reportHit = function(headshot: boolean)
 				RemoteHandler.fireClient(Remotes.Names.ShotResult, player, headshot)
 			end,
+			explode = ZombieService.explode,
 		})
 	end
 
