@@ -8,6 +8,7 @@ export const RemoteNames = {
 	WeaponState: "WeaponState",
 	PlayerStats: "PlayerStats",
 	RequestSync: "RequestSync",
+	ShotResult: "ShotResult",
 } as const;
 
 export interface RoundSnapshot {

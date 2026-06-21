@@ -99,12 +99,39 @@ function Crosshair() {
 	);
 }
 
+function HitMarker(props: { headshot: boolean }) {
+	const color = props.headshot ? Color3.fromRGB(255, 90, 90) : WHITE;
+	const line = (rotation: number) => (
+		<frame
+			Rotation={rotation}
+			AnchorPoint={new Vector2(0.5, 0.5)}
+			Position={UDim2.fromScale(0.5, 0.5)}
+			Size={UDim2.fromOffset(16, 2)}
+			BackgroundColor3={color}
+			BackgroundTransparency={0.1}
+			BorderSizePixel={0}
+		/>
+	);
+	return (
+		<frame
+			AnchorPoint={new Vector2(0.5, 0.5)}
+			Position={UDim2.fromScale(0.5, 0.5)}
+			Size={UDim2.fromOffset(22, 22)}
+			BackgroundTransparency={1}
+		>
+			{line(45)}
+			{line(-45)}
+		</frame>
+	);
+}
+
 export function Hud() {
 	const [round, setRound] = useState<RoundSnapshot | undefined>(undefined);
 	const [weapon, setWeapon] = useState<WeaponSnapshot | undefined>(undefined);
 	const [stats, setStats] = useState<StatsSnapshot>({ points: 0, kills: 0 });
 	const [health, setHealth] = useState(100);
 	const [maxHealth, setMaxHealth] = useState(100);
+	const [hitMarker, setHitMarker] = useState<{ headshot: boolean } | undefined>(undefined);
 
 	useEffect(() => {
 		const conns: RBXScriptConnection[] = [];
@@ -117,6 +144,20 @@ export function Hud() {
 
 		const statsRemote = getRemote(RemoteNames.PlayerStats);
 		if (statsRemote) conns.push(statsRemote.OnClientEvent.Connect((s) => setStats(s as StatsSnapshot)));
+
+		let hitId = 0;
+		const shotResult = getRemote(RemoteNames.ShotResult);
+		if (shotResult)
+			conns.push(
+				shotResult.OnClientEvent.Connect((headshot: boolean) => {
+					hitId += 1;
+					const myId = hitId;
+					setHitMarker({ headshot });
+					task.delay(0.15, () => {
+						if (hitId === myId) setHitMarker(undefined);
+					});
+				}),
+			);
 
 		const player = Players.LocalPlayer;
 		let humanoidConn: RBXScriptConnection | undefined;
@@ -162,6 +203,7 @@ export function Hud() {
 	return (
 		<frame Size={UDim2.fromScale(1, 1)} BackgroundTransparency={1} BorderSizePixel={0}>
 			<Crosshair />
+			{hitMarker !== undefined ? <HitMarker headshot={hitMarker.headshot} /> : undefined}
 
 			<Panel anchor={new Vector2(0.5, 0)} position={UDim2.fromScale(0.5, 0.03)} size={UDim2.fromScale(0.3, 0.07)}>
 				<Label text={roundText} color={WHITE} />

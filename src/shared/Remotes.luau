@@ -16,6 +16,7 @@ local Remotes = {
 		RoundState = "RoundState", -- round phase/number/zombies snapshot for the HUD
 		WeaponState = "WeaponState", -- current weapon ammo/reload for the HUD
 		PlayerStats = "PlayerStats", -- points/kills for the HUD
+		ShotResult = "ShotResult", -- server -> shooter: a shot connected (headshot flag) for hit markers
 		-- Client -> Server
 		Shoot = "Shoot", -- fire intent (aim direction)
 		Reload = "Reload", -- reload request

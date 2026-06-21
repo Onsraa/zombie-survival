@@ -124,11 +124,14 @@ local function onShoot(player: Player, direction: any)
 	if result then
 		local zombie = getZombieFromPart(result.Instance)
 		if zombie then
+			local headshot = result.Instance.Name == "Head"
 			local damage = weapon.damage
-			if result.Instance.Name == "Head" then
+			if headshot then
 				damage *= weapon.headshotMultiplier
 			end
 			ZombieService.damageZombie(zombie, damage, player)
+			-- Tell the shooter they connected (for the HUD hit marker).
+			RemoteHandler.fireClient(Remotes.Names.ShotResult, player, headshot)
 		end
 	end
 
@@ -173,6 +176,7 @@ end
 
 function WeaponService.init()
 	RemoteHandler.createRemote(Remotes.Names.WeaponState, "Event")
+	RemoteHandler.createRemote(Remotes.Names.ShotResult, "Event")
 	RemoteHandler.register({
 		Name = Remotes.Names.Shoot,
 		Type = "Event",
