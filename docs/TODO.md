@@ -54,6 +54,13 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 - [x] Mobile-safe layout (UDim2.fromScale, CoreUISafeInsets)
 - [ ] Mobile device-simulator pass (rbx-device-simulator-lua) across phone/tablet
 
+## FPS feel ✅
+- [x] First-person locked camera + center crosshair
+- [x] Recoil (camera kick), tracers + impact sparks (client cosmetic, immediate)
+- [x] Hit markers (server ShotResult → HUD, white / red-headshot)
+- [ ] Gun viewmodel + muzzle flash (needs a gun model asset)
+- [ ] Sound (gunshot / reload / hit) — needs audio asset IDs
+
 ## Next options
 - [ ] Wall-buys (Sprint 4b): arena buy spots + Buy remote → points SPEND
 - [ ] Upload the 6 zombie animations → AnimationId (production playback)
