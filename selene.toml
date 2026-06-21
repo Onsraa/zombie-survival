@@ -1,0 +1,15 @@
+std = "roblox"
+
+[rules]
+unused_variable = "warn"
+shadowing = "warn"
+undefined_variable = "deny"
+unscoped_variables = "deny"
+deprecated = "warn"
+multiple_statements = "warn"
+empty_if = "warn"
+empty_loop = "warn"
+mismatched_arg_count = "warn"
+must_use = "warn"
+roblox_incorrect_color3_new_bounds = "warn"
+roblox_suspicious_udim2_new = "warn"

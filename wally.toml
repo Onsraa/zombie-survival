@@ -1,0 +1,14 @@
+[package]
+name = "teddy/zombie-survival"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+description = "Co-op round-based zombie survival game"
+
+# Runtime dependencies are added per-epic as they are genuinely needed, to keep
+# the dependency surface minimal (see docs/ARCHITECTURE.md).
+#   - Epic 4 (persistence): ProfileStore for session-locked player data (SE-1).
+[dependencies]
+
+[dev-dependencies]

@@ -1,0 +1,8 @@
+{
+	"languageMode": "strict",
+	"aliases": {
+		"shared": "src/shared",
+		"server": "src/game/server",
+		"client": "src/game/client"
+	}
+}

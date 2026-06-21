@@ -1,0 +1,29 @@
+# Roblox place / build artifacts (built from source via Rojo)
+*.rbxlx
+*.rbxl
+*.rbxm
+*.rbxmx
+
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
+
+# Rojo sourcemap (auto-generated)
+sourcemap.json
+
+# Wally packages (installed from registry, not committed)
+/Packages/
+/ServerPackages/
+/DevPackages/
+
+# Selene generated Roblox std
+roblox.yml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local agent tooling / vendored skills (not part of the game)
+.claude/
+.agents/
+skills-lock.json
