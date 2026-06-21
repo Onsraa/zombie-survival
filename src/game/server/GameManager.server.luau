@@ -39,6 +39,19 @@ local function init()
 
 	RemoteHandler.init()
 	RemoteHandler.createRemote(Remotes.Names.SessionReady, "Event")
+	RemoteHandler.createRemote(Remotes.Names.PlayerStats, "Event")
+
+	-- HUD requests a full state push once its listeners are connected.
+	RemoteHandler.register({
+		Name = Remotes.Names.RequestSync,
+		Type = "Event",
+		Handler = function(player: Player)
+			WeaponService.pushState(player)
+			SessionService.pushStats(player)
+			RoundService.pushState(player)
+		end,
+		RateLimit = 5,
+	})
 
 	Players.PlayerAdded:Connect(onPlayerAdded)
 	Players.PlayerRemoving:Connect(onPlayerRemoving)

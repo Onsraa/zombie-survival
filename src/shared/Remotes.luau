@@ -15,9 +15,11 @@ local Remotes = {
 		SessionReady = "SessionReady", -- fired once per player after their session is created
 		RoundState = "RoundState", -- round phase/number/zombies snapshot for the HUD
 		WeaponState = "WeaponState", -- current weapon ammo/reload for the HUD
+		PlayerStats = "PlayerStats", -- points/kills for the HUD
 		-- Client -> Server
 		Shoot = "Shoot", -- fire intent (aim direction)
 		Reload = "Reload", -- reload request
+		RequestSync = "RequestSync", -- HUD asks the server to push current state on mount
 	},
 }
 

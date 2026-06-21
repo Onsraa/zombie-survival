@@ -166,6 +166,11 @@ local function onReload(player: Player)
 	end)
 end
 
+-- Push current weapon state to one player (used by the HUD sync-on-mount request).
+function WeaponService.pushState(player: Player)
+	broadcastState(player)
+end
+
 function WeaponService.init()
 	RemoteHandler.createRemote(Remotes.Names.WeaponState, "Event")
 	RemoteHandler.register({

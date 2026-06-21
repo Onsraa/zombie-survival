@@ -196,4 +196,9 @@ function RoundService.getSnapshot(): Types.RoundSnapshot
 	return snapshot()
 end
 
+-- Push current round state to one player (HUD sync-on-mount).
+function RoundService.pushState(player: Player)
+	RemoteHandler.fireClient(Remotes.Names.RoundState, player, snapshot())
+end
+
 return RoundService
