@@ -75,6 +75,9 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
   as `Animation` objects (with `AnimationId`). The controller loads either form, pcall-guarded, so a
   missing animation never breaks a zombie.
 - **`RoundService`** (server): co-op wave state machine; broadcasts `RoundState` (change-based) for the HUD.
+- **`WeaponService`** (server): server-authoritative raycast shooting — the client sends only an aim
+  *direction*; the server raycasts, applies damage (+headshot), manages ammo/reload, and awards points
+  via `damageZombie`. `WeaponController` (client) handles input (desktop mouse + mobile touch).
 
 ## Conventions / quality gates
 - `--!strict` on module APIs; no type escape hatches.

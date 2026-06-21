@@ -40,11 +40,17 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 - [ ] PROD: upload the 6 KeyframeSequence animations → reference as Animation (AnimationId) for playback in published game
 - [ ] Decide art versioning: commit base place vs export Assets → assets.rbxmx (model+animations not yet in git)
 
-## Next — Sprint 4 (Weapons + Points)
-- [ ] WeaponService: raycast hitscan, server-authoritative damage/ammo/reload
-- [ ] Pistol start + 1-2 wall-buys; points earn (hit/kill) + spend (wall-buy/ammo)
-- [ ] Mobile shoot/aim/reload inputs (ContextActionService)
-- [ ] Verify: 2-client kills, client point-tamper rejected, wall-buy works
+## Sprint 4 — Weapons (core ✅, wall-buys pending)
+- [x] WeaponService: server-authoritative raycast hitscan, ammo, reload (verified: 8 shots = 200 dmg, tamper = 0)
+- [x] Pistol start; points earn via damageZombie (hit/kill, server-side — no client points remote)
+- [x] WeaponController: desktop mouse (semi/auto) + mobile ContextActionService shoot/reload
+- [x] Fixed: round spawn loop stops on game over (generation guard) — verified no over-spawn (R1 caps at 8)
+- [ ] Wall-buys: arena buy spots + Buy remote → points SPEND (rifle/shotgun/ammo)
+
+## Next — Sprint 5 (roblox-ts + React HUD)
+- [ ] Stand up roblox-ts toolchain (Node present) + @rbxts/react UI sub-project
+- [ ] HUD: round #, health, points, ammo, zombies remaining (consume RoundState + WeaponState)
+- [ ] Mobile-safe layout (UDim2.fromScale, ScreenInsets, touch buttons)
 
 ## Decisions
 - UI = roblox-ts + **@rbxts/react**, hybrid (UI ↔ gameplay only via RemoteEvents). Toolchain stood up at **S5**. Node v24 / npm 11 present.
