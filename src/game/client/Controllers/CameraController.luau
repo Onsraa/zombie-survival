@@ -8,11 +8,14 @@
 ]]
 
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 
 local CameraController = {}
 
 function CameraController.start()
 	Players.LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
+	-- Hide the OS cursor; the HUD crosshair is the aim point.
+	UserInputService.MouseIconEnabled = false
 end
 
 return CameraController

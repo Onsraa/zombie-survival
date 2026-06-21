@@ -1,28 +1,32 @@
 --!strict
 --[[
 	WeaponEffects.luau
-	Client-side shot cosmetics for FPS feel: camera recoil, bullet tracers, and
-	impact sparks. These are purely visual and run immediately on fire (no server
-	round-trip) — the server remains authoritative for damage. Hit markers are
-	driven separately by the server's ShotResult remote (HUD).
+	Client-side shot cosmetics: a snappy visual recoil kick (COD "recoil" is basically
+	animation — the real accuracy is the server's spread), plus bullet tracers and
+	impact sparks. The recoil profile comes per-gun from its GunDef.
+
+	Recoil is captured AFTER the shot's aim is read (see WeaponController.fireOnce), and
+	recovers quickly, so it's effectively visual and doesn't corrupt aim.
 ]]
 
 local Debris = game:GetService("Debris")
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
+local Types = require(ReplicatedStorage.Shared.Weapons.Types)
+
 local WeaponEffects = {}
 
-local RECOIL_PITCH = 1.6 -- degrees of upward kick per shot
-local RECOIL_YAW = 0.5 -- random horizontal kick (degrees)
-local RECOIL_RECOVER = 12 -- higher = snappier recovery
 local TRACER_LIFETIME = 0.05
 local IMPACT_LIFETIME = 0.08
-local MAX_RANGE = 400
+local MAX_RANGE = 600
+local DEFAULT_RECOVER = 14
 
--- Accumulated transient recoil offset (x = pitch, y = yaw), in degrees. Decays to 0.
+-- Transient recoil offset (x = pitch UP, y = yaw). Decays to zero each frame.
 local recoil = Vector2.zero
+local recoverRate = DEFAULT_RECOVER
 
 local function raycastParams(): RaycastParams
 	local params = RaycastParams.new()
@@ -67,21 +71,20 @@ local function spawnImpact(pos: Vector3)
 	Debris:AddItem(part, IMPACT_LIFETIME)
 end
 
--- Called once per shot (after the fire intent is sent).
-function WeaponEffects.onFire()
+-- Called once per shot with the gun's recoil profile.
+function WeaponEffects.onFire(recoilProfile: Types.RecoilProfile)
+	recoverRate = recoilProfile.recover
+	recoil += Vector2.new(recoilProfile.vertical, (math.random() * 2 - 1) * recoilProfile.horizontal)
+
 	local camera = Workspace.CurrentCamera
 	if not camera then
 		return
 	end
-
-	recoil += Vector2.new(RECOIL_PITCH, (math.random() - 0.5) * 2 * RECOIL_YAW)
-
 	local origin = camera.CFrame.Position
 	local direction = camera.CFrame.LookVector
 	local result = Workspace:Raycast(origin, direction * MAX_RANGE, raycastParams())
 	local finish = if result then result.Position else origin + direction * MAX_RANGE
 
-	-- Start the tracer below-right of the eyeline so it reads as gunfire.
 	local muzzle = (camera.CFrame * CFrame.new(0.6, -0.6, -1)).Position
 	spawnTracer(muzzle, finish)
 	if result then
@@ -90,16 +93,15 @@ function WeaponEffects.onFire()
 end
 
 function WeaponEffects.start()
-	-- Apply (and recover) recoil after the default camera updates each frame.
 	RunService:BindToRenderStep("WeaponRecoil", Enum.RenderPriority.Camera.Value + 1, function(dt: number)
 		if recoil.Magnitude > 0.01 then
 			local camera = Workspace.CurrentCamera
 			if camera then
-				-- Negative pitch rotates the view upward (gun climb).
-				camera.CFrame = camera.CFrame * CFrame.Angles(math.rad(-recoil.X), math.rad(recoil.Y), 0)
+				-- Positive pitch kicks the view UP.
+				camera.CFrame = camera.CFrame * CFrame.Angles(math.rad(recoil.X), math.rad(recoil.Y), 0)
 			end
 		end
-		recoil = recoil:Lerp(Vector2.zero, math.min(dt * RECOIL_RECOVER, 1))
+		recoil = recoil:Lerp(Vector2.zero, math.min(dt * recoverRate, 1))
 	end)
 end
 
