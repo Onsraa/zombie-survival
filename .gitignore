@@ -4,6 +4,9 @@
 *.rbxm
 *.rbxmx
 
+# Exception: zombie art (model + animations) is intentionally version-controlled
+!assets/Assets.rbxm
+
 # Roblox Studio lock files
 /*.rbxlx.lock
 /*.rbxl.lock
