@@ -47,6 +47,7 @@ local function init()
 	player.CharacterAdded:Connect(onCharacterAdded)
 
 	-- Start client controllers.
+	require(script.Parent.Controllers.CameraController).start()
 	require(script.Parent.Controllers.WeaponController).start()
 
 	print("[ClientController] Initialized")

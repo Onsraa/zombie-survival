@@ -52,6 +52,53 @@ function Label(props: {
 	);
 }
 
+function Crosshair() {
+	const LEN = 8;
+	const THICK = 2;
+	const GAP = 5;
+	return (
+		<frame
+			AnchorPoint={new Vector2(0.5, 0.5)}
+			Position={UDim2.fromScale(0.5, 0.5)}
+			Size={UDim2.fromOffset(40, 40)}
+			BackgroundTransparency={1}
+		>
+			<frame
+				AnchorPoint={new Vector2(0.5, 1)}
+				Position={new UDim2(0.5, 0, 0.5, -GAP)}
+				Size={UDim2.fromOffset(THICK, LEN)}
+				BackgroundColor3={WHITE}
+				BackgroundTransparency={0.15}
+				BorderSizePixel={0}
+			/>
+			<frame
+				AnchorPoint={new Vector2(0.5, 0)}
+				Position={new UDim2(0.5, 0, 0.5, GAP)}
+				Size={UDim2.fromOffset(THICK, LEN)}
+				BackgroundColor3={WHITE}
+				BackgroundTransparency={0.15}
+				BorderSizePixel={0}
+			/>
+			<frame
+				AnchorPoint={new Vector2(1, 0.5)}
+				Position={new UDim2(0.5, -GAP, 0.5, 0)}
+				Size={UDim2.fromOffset(LEN, THICK)}
+				BackgroundColor3={WHITE}
+				BackgroundTransparency={0.15}
+				BorderSizePixel={0}
+			/>
+			<frame
+				AnchorPoint={new Vector2(0, 0.5)}
+				Position={new UDim2(0.5, GAP, 0.5, 0)}
+				Size={UDim2.fromOffset(LEN, THICK)}
+				BackgroundColor3={WHITE}
+				BackgroundTransparency={0.15}
+				BorderSizePixel={0}
+			/>
+		</frame>
+	);
+}
+
 export function Hud() {
 	const [round, setRound] = useState<RoundSnapshot | undefined>(undefined);
 	const [weapon, setWeapon] = useState<WeaponSnapshot | undefined>(undefined);
@@ -114,6 +161,8 @@ export function Hud() {
 
 	return (
 		<frame Size={UDim2.fromScale(1, 1)} BackgroundTransparency={1} BorderSizePixel={0}>
+			<Crosshair />
+
 			<Panel anchor={new Vector2(0.5, 0)} position={UDim2.fromScale(0.5, 0.03)} size={UDim2.fromScale(0.3, 0.07)}>
 				<Label text={roundText} color={WHITE} />
 			</Panel>
