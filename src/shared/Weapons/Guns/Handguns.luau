@@ -19,7 +19,7 @@ return {
 		penetration = 1,
 		penetrationFalloff = 1.0,
 		range = 300,
-		spread = { base = 1.0, max = 4.0, bloomPerShot = 0.8, recover = 6 },
+		spread = { base = 0.0, max = 4.0, bloomPerShot = 0.8, recover = 6 },
 		recoil = { vertical = 1.0, horizontal = 0.3, recover = 14 },
 		magSize = 8,
 		reserveAmmo = 80,

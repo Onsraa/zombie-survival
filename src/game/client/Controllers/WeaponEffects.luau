@@ -1,32 +1,20 @@
 --!strict
 --[[
 	WeaponEffects.luau
-	Client-side shot cosmetics: a snappy visual recoil kick (COD "recoil" is basically
-	animation — the real accuracy is the server's spread), plus bullet tracers and
-	impact sparks. The recoil profile comes per-gun from its GunDef.
-
-	Recoil is captured AFTER the shot's aim is read (see WeaponController.fireOnce), and
-	recovers quickly, so it's effectively visual and doesn't corrupt aim.
+	Client-side shot cosmetics: bullet tracers + impact sparks. No camera recoil —
+	accuracy is the server's spread, and any gun "kick" will be a viewmodel animation
+	once gun models exist (per design, COD recoil ≈ animation, not camera movement).
 ]]
 
 local Debris = game:GetService("Debris")
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
-
-local Types = require(ReplicatedStorage.Shared.Weapons.Types)
 
 local WeaponEffects = {}
 
 local TRACER_LIFETIME = 0.05
 local IMPACT_LIFETIME = 0.08
 local MAX_RANGE = 600
-local DEFAULT_RECOVER = 14
-
--- Transient recoil offset (x = pitch UP, y = yaw). Decays to zero each frame.
-local recoil = Vector2.zero
-local recoverRate = DEFAULT_RECOVER
 
 local function raycastParams(): RaycastParams
 	local params = RaycastParams.new()
@@ -71,11 +59,8 @@ local function spawnImpact(pos: Vector3)
 	Debris:AddItem(part, IMPACT_LIFETIME)
 end
 
--- Called once per shot with the gun's recoil profile.
-function WeaponEffects.onFire(recoilProfile: Types.RecoilProfile)
-	recoverRate = recoilProfile.recover
-	recoil += Vector2.new(recoilProfile.vertical, (math.random() * 2 - 1) * recoilProfile.horizontal)
-
+-- Called once per shot: draw a tracer from the muzzle to where the camera points.
+function WeaponEffects.onFire()
 	local camera = Workspace.CurrentCamera
 	if not camera then
 		return
@@ -90,19 +75,6 @@ function WeaponEffects.onFire(recoilProfile: Types.RecoilProfile)
 	if result then
 		spawnImpact(finish)
 	end
-end
-
-function WeaponEffects.start()
-	RunService:BindToRenderStep("WeaponRecoil", Enum.RenderPriority.Camera.Value + 1, function(dt: number)
-		if recoil.Magnitude > 0.01 then
-			local camera = Workspace.CurrentCamera
-			if camera then
-				-- Positive pitch kicks the view UP.
-				camera.CFrame = camera.CFrame * CFrame.Angles(math.rad(recoil.X), math.rad(recoil.Y), 0)
-			end
-		end
-		recoil = recoil:Lerp(Vector2.zero, math.min(dt * recoverRate, 1))
-	end)
 end
 
 return WeaponEffects

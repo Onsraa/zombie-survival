@@ -209,7 +209,7 @@ export function Hud() {
 				<Label text={roundText} color={WHITE} />
 			</Panel>
 
-			<Panel anchor={new Vector2(0, 0)} position={UDim2.fromScale(0.02, 0.03)} size={UDim2.fromScale(0.18, 0.06)}>
+			<Panel anchor={new Vector2(0, 0)} position={UDim2.fromScale(0.02, 0.1)} size={UDim2.fromScale(0.18, 0.06)}>
 				<Label text={`${stats.points} pts`} color={ACCENT} align={Enum.TextXAlignment.Left} />
 			</Panel>
 

@@ -45,7 +45,7 @@ local function fireOnce()
 		origin = camera.CFrame.Position,
 		direction = camera.CFrame.LookVector,
 	})
-	WeaponEffects.onFire(gun.recoil)
+	WeaponEffects.onFire()
 end
 
 local function doBurst(gun: GunDef)
@@ -90,7 +90,6 @@ local function onAction(
 end
 
 function WeaponController.start()
-	WeaponEffects.start()
 	shootRemote = Remotes.get(Remotes.Names.Shoot)
 	reloadRemote = Remotes.get(Remotes.Names.Reload)
 

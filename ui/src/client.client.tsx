@@ -9,7 +9,9 @@ const playerGui = player.WaitForChild("PlayerGui") as PlayerGui;
 const screenGui = new Instance("ScreenGui");
 screenGui.Name = "HudGui";
 screenGui.ResetOnSpawn = false;
-screenGui.ScreenInsets = Enum.ScreenInsets.CoreUISafeInsets;
+// None = the GUI's (0.5,0.5) is the true viewport center, so the crosshair aligns
+// with where the camera shoots. Panels are positioned to clear the Roblox topbar.
+screenGui.ScreenInsets = Enum.ScreenInsets.None;
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
 screenGui.Parent = playerGui;
 
