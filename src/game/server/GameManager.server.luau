@@ -18,6 +18,7 @@ local RemoteHandler = require(Server.RemoteHandler)
 local SessionService = require(Server.Services.SessionService)
 local ArenaService = require(Server.Services.ArenaService)
 local ZombieService = require(Server.Services.ZombieService)
+local WeaponService = require(Server.Services.WeaponService)
 local RoundService = require(Server.Services.RoundService)
 local Remotes = require(ReplicatedStorage.Shared.Remotes)
 
@@ -53,8 +54,9 @@ end
 local function start()
 	-- Build the arena: registers collision groups and creates spawn nodes.
 	ArenaService.build()
-	-- Prepare the zombie template, then start the co-op wave loop.
+	-- Prepare the zombie template + weapons, then start the co-op wave loop.
 	ZombieService.init()
+	WeaponService.init()
 	RoundService.start()
 	print("[GameManager] Started")
 end
