@@ -13,6 +13,7 @@ local Remotes = {
 	Names = {
 		-- Server -> Client
 		SessionReady = "SessionReady", -- fired once per player after their session is created
+		RoundState = "RoundState", -- round phase/number/zombies snapshot for the HUD
 	},
 }
 

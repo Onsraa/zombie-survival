@@ -28,6 +28,19 @@ local function init()
 		end)
 	end
 
+	-- Consume round-state broadcasts (the S5 React HUD will render these). Connecting
+	-- now also keeps the RemoteEvent queue drained. Log only on round change.
+	local lastRoundNumber = 0
+	local roundState = Remotes.get(Remotes.Names.RoundState)
+	if roundState then
+		roundState.OnClientEvent:Connect(function(snapshot)
+			if typeof(snapshot) == "table" and snapshot.round ~= lastRoundNumber then
+				lastRoundNumber = snapshot.round
+				print(`[ClientController] Round {snapshot.round} ({snapshot.phase})`)
+			end
+		end)
+	end
+
 	if player.Character then
 		task.spawn(onCharacterAdded, player.Character)
 	end

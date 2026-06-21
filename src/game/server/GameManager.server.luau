@@ -18,6 +18,7 @@ local RemoteHandler = require(Server.RemoteHandler)
 local SessionService = require(Server.Services.SessionService)
 local ArenaService = require(Server.Services.ArenaService)
 local ZombieService = require(Server.Services.ZombieService)
+local RoundService = require(Server.Services.RoundService)
 local Remotes = require(ReplicatedStorage.Shared.Remotes)
 
 local function onPlayerAdded(player: Player)
@@ -52,8 +53,9 @@ end
 local function start()
 	-- Build the arena: registers collision groups and creates spawn nodes.
 	ArenaService.build()
-	-- Prepare the zombie template + pool (RoundService will drive spawns in Sprint 3).
+	-- Prepare the zombie template, then start the co-op wave loop.
 	ZombieService.init()
+	RoundService.start()
 	print("[GameManager] Started")
 end
 
