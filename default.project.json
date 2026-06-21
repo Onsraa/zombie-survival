@@ -9,6 +9,18 @@
       },
       "Assets": {
         "$path": "assets/Assets.rbxm"
+      },
+      "rbxts_include": {
+        "$path": "ui/include",
+        "node_modules": {
+          "$className": "Folder",
+          "@rbxts": {
+            "$path": "ui/node_modules/@rbxts"
+          },
+          "@rbxts-js": {
+            "$path": "ui/node_modules/@rbxts-js"
+          }
+        }
       }
     },
 
@@ -22,6 +34,9 @@
       "StarterPlayerScripts": {
         "Client": {
           "$path": "src/game/client"
+        },
+        "UI": {
+          "$path": "ui/out"
         }
       }
     },

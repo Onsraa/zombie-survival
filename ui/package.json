@@ -1,0 +1,20 @@
+{
+	"name": "zombie-ui",
+	"version": "0.1.0",
+	"private": true,
+	"description": "roblox-ts + @rbxts/react UI for the zombie survival game",
+	"scripts": {
+		"build": "rbxtsc",
+		"watch": "rbxtsc -w"
+	},
+	"devDependencies": {
+		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/types": "^1.0.925",
+		"roblox-ts": "^3.0.0",
+		"typescript": "^6.0.3"
+	},
+	"dependencies": {
+		"@rbxts/react": "^17.3.7-ts.2",
+		"@rbxts/react-roblox": "^17.3.7-ts.2"
+	}
+}

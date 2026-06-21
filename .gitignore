@@ -30,3 +30,9 @@ Thumbs.db
 .claude/
 .agents/
 skills-lock.json
+
+# Node / roblox-ts UI (generated)
+node_modules/
+ui/out/
+ui/include/
+*.tsbuildinfo
