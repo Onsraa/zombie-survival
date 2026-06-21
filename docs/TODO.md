@@ -47,10 +47,18 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 - [x] Fixed: round spawn loop stops on game over (generation guard) — verified no over-spawn (R1 caps at 8)
 - [ ] Wall-buys: arena buy spots + Buy remote → points SPEND (rifle/shotgun/ammo)
 
-## Next — Sprint 5 (roblox-ts + React HUD)
-- [ ] Stand up roblox-ts toolchain (Node present) + @rbxts/react UI sub-project
-- [ ] HUD: round #, health, points, ammo, zombies remaining (consume RoundState + WeaponState)
-- [ ] Mobile-safe layout (UDim2.fromScale, ScreenInsets, touch buttons)
+## Sprint 5 — roblox-ts + React HUD ✅
+- [x] roblox-ts toolchain + @rbxts/react UI sub-project (ui/), Rojo-wired (rbxts_include + @rbxts/@rbxts-js scopes + UI out)
+- [x] HUD: round, health bar, points, ammo, zombies remaining — verified rendering live
+- [x] PlayerStats + RequestSync remotes; HUD syncs current state on mount (ammo shows immediately)
+- [x] Mobile-safe layout (UDim2.fromScale, CoreUISafeInsets)
+- [ ] Mobile device-simulator pass (rbx-device-simulator-lua) across phone/tablet
+
+## Next options
+- [ ] Wall-buys (Sprint 4b): arena buy spots + Buy remote → points SPEND
+- [ ] Upload the 6 zombie animations → AnimationId (production playback)
+- [ ] Epic 3 signature systems (perks/box/pack-a-punch/barriers/down&revive)
+- [ ] Epic 2 lobby + parties (reserved-server teleport)
 
 ## Decisions
 - UI = roblox-ts + **@rbxts/react**, hybrid (UI ↔ gameplay only via RemoteEvents). Toolchain stood up at **S5**. Node v24 / npm 11 present.

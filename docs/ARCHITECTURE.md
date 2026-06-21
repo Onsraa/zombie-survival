@@ -60,8 +60,12 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
   mapped by Rojo into the client. `rbxtsc -w` runs alongside `rojo serve`.
 - TS-UI talks to Luau gameplay **only through RemoteEvents** (the network boundary) — no cross-language
   module requires. Remote names are mirrored as TS constants.
-- Gameplay (server/shared) stays hand-written Luau. The toolchain is stood up at Epic 1 S5 (first UI
-  sprint); Node v24 / npm 11 confirmed present.
+- Gameplay (server/shared) stays hand-written Luau. **Build step:** `cd ui && npm install && npm run
+  build` (rbxtsc) compiles `ui/src` → `ui/out`. Rojo maps `ui/out` → `StarterPlayerScripts.UI` and
+  `ui/include` + `ui/node_modules/{@rbxts,@rbxts-js}` → `ReplicatedStorage.rbxts_include`.
+- The HUD requests a full state push on mount via the `RequestSync` remote (so ammo/points/round show
+  immediately regardless of mount timing). Server pushes `WeaponState` / `PlayerStats` / `RoundState`.
+- `ui/out`, `ui/include`, `ui/node_modules` are generated/gitignored — run the build step after cloning.
 
 ## Zombies
 - **Model**: cloned from `ReplicatedStorage.Assets.Models.Zombie` (themed Motor6D rig). Art content

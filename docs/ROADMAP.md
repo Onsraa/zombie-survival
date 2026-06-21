@@ -19,7 +19,7 @@ Status legend: ✅ done · 🚧 in progress · ⬜ not started
 | S2 | `ZombieService`: pooled Humanoid zombies, throttled pathfinding, melee, death→points, collision group, cap 24 | spawn 24 healthy FPS (mobile emu); path to player; cap holds | ✅ |
 | S3 | `RoundService`: wave state machine, scaling, "pool exhausted & all dead → next", intermission; co-op shared; mid-round join = spectate | 3 rounds solo + 2-client; scaling correct; no leaks | ✅ |
 | S4 | `WeaponService` raycast hitscan (server-auth, ammo, reload); pistol + wall-buys; points earn/spend | 2-client kills; client point-tamper rejected; wall-buy works | 🚧 (shooting+points ✅; wall-buys pending) |
-| S5 | Stand up roblox-ts + @rbxts/react UI toolchain; HUD (round/health/points/ammo/zombies-left) in React; mobile touch controls; death→spectate; all-down→game over→restart | device simulator phone/tablet; full match on touch | ⬜ |
+| S5 | Stand up roblox-ts + @rbxts/react UI toolchain; HUD (round/health/points/ammo/zombies-left) in React; mobile touch controls; death→spectate; all-down→game over→restart | device simulator phone/tablet; full match on touch | ✅ (HUD built + verified; mobile device-sim pass pending) |
 
 ## Epic 2 — Lobby, Parties & Server Orchestration
 | Sprint | Deliverable | Verify | Status |
