@@ -26,12 +26,25 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 - [x] Melee contact damage (verified: swarm killed player 100→0); death → points hook + Trove cleanup
 - [x] Hard cap 24 (30 attempts → 24 alive); replication verified (24/24 on client) + 113 fps
 
-## Next — Sprint 3 (RoundService)
-- [ ] Wave state machine: Intermission → Active → (pool exhausted & all dead) → next round
-- [ ] Per-round scaling via ZombieConfig (spawnWave count / health / speed)
-- [ ] Round state broadcast (round #, zombies remaining) via RemoteEvent
-- [ ] Co-op shared rounds; player death → spectate; all-down → game over → restart
-- [ ] Verify: 3 rounds solo + 2-client; scaling correct; no leaks across rounds
+## Sprint 3 — RoundService ✅
+- [x] Wave state machine: Intermission → Active → (pool exhausted & all dead) → next round
+- [x] Per-round scaling via ZombieConfig (count / health / speed) — verified live R1(8,hp150)→R2(10,hp250)
+- [x] Round state broadcast (RoundState remote), change-based; client consumer in ClientController
+- [x] Co-op shared rounds; CharacterAutoLoads=false + respawn each round; all-down → game over → restart
+- [x] Verified: completion + game-over→restart in Studio
+
+## Merge — adopted AI-agent zombie ✅
+- [x] Themed Zombie model is the ZombieService template (greybox dropped)
+- [x] ZombieController ported to src/ (gore: head<15%, legs<40%→crawl; resilient animations)
+- [x] Deleted ZombieDemo + in-place ZombieController + stray ZombiePreview model
+- [ ] PROD: upload the 6 KeyframeSequence animations → reference as Animation (AnimationId) for playback in published game
+- [ ] Decide art versioning: commit base place vs export Assets → assets.rbxmx (model+animations not yet in git)
+
+## Next — Sprint 4 (Weapons + Points)
+- [ ] WeaponService: raycast hitscan, server-authoritative damage/ammo/reload
+- [ ] Pistol start + 1-2 wall-buys; points earn (hit/kill) + spend (wall-buy/ammo)
+- [ ] Mobile shoot/aim/reload inputs (ContextActionService)
+- [ ] Verify: 2-client kills, client point-tamper rejected, wall-buy works
 
 ## Decisions
 - UI = roblox-ts + **@rbxts/react**, hybrid (UI ↔ gameplay only via RemoteEvents). Toolchain stood up at **S5**. Node v24 / npm 11 present.

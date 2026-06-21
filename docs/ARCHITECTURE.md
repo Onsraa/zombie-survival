@@ -63,6 +63,19 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
 - Gameplay (server/shared) stays hand-written Luau. The toolchain is stood up at Epic 1 S5 (first UI
   sprint); Node v24 / npm 11 confirmed present.
 
+## Zombies
+- **Model**: cloned from `ReplicatedStorage.Assets.Models.Zombie` (themed Motor6D rig). Art content
+  currently lives in the place (not yet version-controlled — see art-versioning TODO).
+- **`ZombieService`** (server): spawn / cap-24 / throttled pathfinding chase / melee / points; zombies
+  are server-owned so movement auto-replicates (no per-frame remotes).
+- **`ZombieController`** (server, one per zombie): animation playback + health-driven gore (head detaches
+  < 15% HP, legs detach < 40% → crawl), with cleanup of ragdolled parts.
+- **Animations**: the 6 `Assets/Animations/*` are **KeyframeSequences**. Played via
+  `KeyframeSequenceProvider` for **Studio preview only**. For a published game, upload them and reference
+  as `Animation` objects (with `AnimationId`). The controller loads either form, pcall-guarded, so a
+  missing animation never breaks a zombie.
+- **`RoundService`** (server): co-op wave state machine; broadcasts `RoundState` (change-based) for the HUD.
+
 ## Conventions / quality gates
 - `--!strict` on module APIs; no type escape hatches.
 - `task.*` only (never `wait`/`spawn`/`delay`).

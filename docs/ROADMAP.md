@@ -17,7 +17,7 @@ Status legend: ✅ done · 🚧 in progress · ⬜ not started
 |---|---|---|---|
 | S1 | Arena (player spawns + perimeter zombie nodes); `ZombieConfig`/`WeaponConfig` | arena loads, nodes tagged; Lune tests of difficulty formulas (r=1,9,10,20) | ✅ |
 | S2 | `ZombieService`: pooled Humanoid zombies, throttled pathfinding, melee, death→points, collision group, cap 24 | spawn 24 healthy FPS (mobile emu); path to player; cap holds | ✅ |
-| S3 | `RoundService`: wave state machine, scaling, "pool exhausted & all dead → next", intermission; co-op shared; mid-round join = spectate | 3 rounds solo + 2-client; scaling correct; no leaks | ⬜ |
+| S3 | `RoundService`: wave state machine, scaling, "pool exhausted & all dead → next", intermission; co-op shared; mid-round join = spectate | 3 rounds solo + 2-client; scaling correct; no leaks | ✅ |
 | S4 | `WeaponService` raycast hitscan (server-auth, ammo, reload); pistol + wall-buys; points earn/spend | 2-client kills; client point-tamper rejected; wall-buy works | ⬜ |
 | S5 | Stand up roblox-ts + @rbxts/react UI toolchain; HUD (round/health/points/ammo/zombies-left) in React; mobile touch controls; death→spectate; all-down→game over→restart | device simulator phone/tablet; full match on touch | ⬜ |
 
