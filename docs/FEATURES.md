@@ -11,6 +11,7 @@ Per-feature spec + status. Status: ✅ done · 🚧 in progress · ⬜ planned.
 | Round loop | 1 | State machine Intermission→Active→GameOver; round ends when pool exhausted & all dead; co-op shared | ⬜ |
 | Weapons & points | 1 | Raycast hitscan, server-authoritative damage/ammo/reload; pistol + wall-buys; points earn/spend | ⬜ |
 | HUD & mobile UX | 1 | Responsive HUD (round/health/points/ammo/zombies-left); touch shoot/reload/interact | ⬜ |
+| Player movement | 1 | First-person stances: sprint (LeftShift) · crouch (C) · prone (X); per-stance WalkSpeed + camera drop; mobile touch buttons. Pose animations pending | ✅ (mechanics) |
 | Lobby & parties | 2 | Social hub place; create/join/leave parties; ready-up; queue | ⬜ |
 | Matchmaking / reserved servers | 2 | ReserveServer + TeleportAsync(+TeleportData); seat party in Game place; retry/rejoin | ⬜ |
 | Perks + Power-ups | 3 | Perk machines; dropped power-ups (Max Ammo, Insta-Kill, Nuke, Double Points) | ⬜ |

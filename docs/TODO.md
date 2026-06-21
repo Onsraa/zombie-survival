@@ -35,7 +35,7 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 
 ## Merge — adopted AI-agent zombie ✅
 - [x] Themed Zombie model is the ZombieService template (greybox dropped)
-- [x] ZombieController ported to src/ (gore: head<15%, legs<40%→crawl; resilient animations)
+- [x] ZombieController ported to src/ (gore: head<15% near death; legs detach on explosion impact→crawl; resilient animations)
 - [x] Deleted ZombieDemo + in-place ZombieController + stray ZombiePreview model
 - [ ] PROD: upload the 6 KeyframeSequence animations → reference as Animation (AnimationId) for playback in published game
 - [ ] Decide art versioning: commit base place vs export Assets → assets.rbxmx (model+animations not yet in git)
@@ -56,17 +56,24 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 
 ## FPS feel ✅
 - [x] First-person locked camera + center crosshair
-- [x] Recoil (camera kick), tracers + impact sparks (client cosmetic, immediate)
+- [x] Tracers + impact sparks (client cosmetic, immediate) — recoil camera-kick later removed (see Latest fixes)
 - [x] Hit markers (server ShotResult → HUD, white / red-headshot)
 - [ ] Gun viewmodel + muzzle flash (needs a gun model asset)
 - [ ] Sound (gunshot / reload / hit) — needs audio asset IDs
 
 ## Weapon system (modular) ✅
 - [x] Data-driven GunDef + GunRegistry (Weapons/Enums/Types/Ballistics); fire-behavior strategies (Hitscan/Shotgun/Projectile)
-- [x] Spread (spray) accuracy + bloom = real mechanic; per-gun visual recoil (up, snappy); RPM cooldown; penetration + falloff
+- [x] Spread (spray) accuracy + bloom = real mechanic; RPM cooldown; penetration + falloff (recoil = data only, no camera kick)
 - [x] Camera-origin aim (bullets hit the crosshair); hide cursor; fire modes (auto/semi/single/burst)
 - [x] Starter guns: M1911 · M16 · AK74u · Olympia · RPK · Ray Gun. Verified: registry valid, hitscan damage, RPK pierces 2
 - [ ] Backlog: add the rest of the COD roster as GunDef data; exotic behaviors (Melee/grenades/Thundergun); per-gun models/sounds/anims; Pack-a-Punch upgrades (Epic 3)
+
+## Latest fixes (combat + movement) ✅ — MCP-verified
+- [x] Removed recoil camera-kick entirely (WeaponEffects = tracer/impact only; `recoil` profile kept as schema-ready data for a future viewmodel animation)
+- [x] Exact-cursor aim: `spread.base = 0` on standard guns (first shot dead-on) + crosshair at true viewport center (`ScreenInsets = None`). Verified: 40 dmg to a target on the screen-center ray at 30 studs
+- [x] Impact-zone gore: legs detach via `ZombieService.explode` (grenade / Ray-Gun ground shot) → crawl; removed the health-based leg detach. Verified: blast detaches legs + 100 dmg; 6% HP leaves legs intact (head still pops near death)
+- [x] Movement stances (`MovementController`): Stand 16 / Crouch `C` 8 / Prone `X` 4 / Sprint hold `LeftShift` 22, sprint blocked while crouched/prone; `CameraOffset` view drop; ContextActionService touch buttons for mobile. Verified live via simulated input
+- [ ] Asset gap: true third-person crouch/prone *pose* + gun viewmodel need rig animations (mechanics complete; poses pending upload, same gap as zombie anims)
 
 ## Next options
 - [ ] Wall-buys (Sprint 4b): arena buy spots + Buy remote → points SPEND

@@ -15,3 +15,15 @@ rojo serve
 ```
 
 For more help, check out [the Rojo documentation](https://rojo.space/docs).
+
+## Controls
+
+| Action | Desktop | Mobile |
+|---|---|---|
+| Move | WASD | Left thumbstick |
+| Look | Mouse (first-person) | Right thumbstick |
+| Shoot | Left Mouse | Tap |
+| Reload | R | Button |
+| Sprint | Hold Left Shift | Sprint button |
+| Crouch | C | Crouch button |
+| Prone | X | Prone button |
