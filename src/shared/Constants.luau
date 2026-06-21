@@ -3,7 +3,7 @@
 	Constants.luau
 	Shared, tunable values used by both server and client.
 	Gameplay-balance numbers that belong to a system live in that system's Config
-	module (see Config/ZombieConfig.luau, Config/WeaponConfig.luau).
+	module (see Config/* and Weapons/*).
 ]]
 
 local Constants = {
