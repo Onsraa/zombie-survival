@@ -1,0 +1,23 @@
+# Features
+
+Per-feature spec + status. Status: ✅ done · 🚧 in progress · ⬜ planned.
+
+| Feature | Epic | Spec summary | Status |
+|---|---|---|---|
+| Toolchain & scaffold | 0 | rokit-pinned tools, Rojo two-place-ready layout, Init/Start bootstrap, central remotes with rate-limit/validation, session-only data | 🚧 |
+| Difficulty scaling | 1 | Health flat→×1.1 after R9; speed tiers walk→super-sprint; spawn pool scales w/ round & players; cap 24. Formulas in `ZombieConfig` | 🚧 (config in place) |
+| Arena | 1 | Enclosed arena, player spawns, perimeter zombie spawn nodes (tagged) | ⬜ |
+| Zombie AI | 1 | Server Humanoid zombies, pooled, throttled `PathfindingService` to nearest player, melee contact damage | ⬜ |
+| Round loop | 1 | State machine Intermission→Active→GameOver; round ends when pool exhausted & all dead; co-op shared | ⬜ |
+| Weapons & points | 1 | Raycast hitscan, server-authoritative damage/ammo/reload; pistol + wall-buys; points earn/spend | ⬜ |
+| HUD & mobile UX | 1 | Responsive HUD (round/health/points/ammo/zombies-left); touch shoot/reload/interact | ⬜ |
+| Lobby & parties | 2 | Social hub place; create/join/leave parties; ready-up; queue | ⬜ |
+| Matchmaking / reserved servers | 2 | ReserveServer + TeleportAsync(+TeleportData); seat party in Game place; retry/rejoin | ⬜ |
+| Perks + Power-ups | 3 | Perk machines; dropped power-ups (Max Ammo, Insta-Kill, Nuke, Double Points) | ⬜ |
+| Mystery Box + Pack-a-Punch | 3 | Random weapon roll; weapon upgrade tier | ⬜ |
+| Barriers / windows | 3 | Zombies breach boarded windows; players repair for points | ⬜ |
+| Down & revive | 3 | Downed state, bleed-out timer, teammate revive, co-op fail when all down | ⬜ |
+| Persistence | 4 | ProfileStore session-locked: best round, kills, unlock currency | ⬜ |
+| Monetization (loot boxes) | 4 | Weapon/clothing skins, `ProcessReceipt`, owned inventory + equip, lobby shop | ⬜ |
+| Performance hardening | 5 | Parallel Luau (if needed), StreamingEnabled, part-count audit | ⬜ |
+| Polish & ship | 5 | VFX/audio/animation; security + publish; analytics | ⬜ |
