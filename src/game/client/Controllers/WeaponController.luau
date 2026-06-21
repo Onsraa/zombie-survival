@@ -14,6 +14,7 @@ local Workspace = game:GetService("Workspace")
 
 local Remotes = require(ReplicatedStorage.Shared.Remotes)
 local WeaponConfig = require(ReplicatedStorage.Shared.Config.WeaponConfig)
+local WeaponEffects = require(script.Parent.WeaponEffects)
 
 local WeaponController = {}
 
@@ -36,6 +37,7 @@ local function fire()
 	end
 	lastFire = now
 	shootRemote:FireServer(camera.CFrame.LookVector)
+	WeaponEffects.onFire()
 end
 
 local function onAction(
@@ -59,6 +61,7 @@ local function onAction(
 end
 
 function WeaponController.start()
+	WeaponEffects.start()
 	shootRemote = Remotes.get(Remotes.Names.Shoot)
 	reloadRemote = Remotes.get(Remotes.Names.Reload)
 
