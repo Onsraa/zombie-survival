@@ -175,6 +175,20 @@ function RoundService.start()
 	Players.CharacterAutoLoads = false
 	RemoteHandler.createRemote(Remotes.Names.RoundState, "Event")
 
+	-- Drop-in co-op: spawn players the moment they join (and any already present at
+	-- startup), so they're never stuck character-less waiting for a round transition.
+	local function ensureSpawned(player: Player)
+		local char = player.Character
+		local humanoid = char and char:FindFirstChildOfClass("Humanoid") :: Humanoid?
+		if not (humanoid and humanoid.Health > 0) then
+			task.spawn(spawnPlayer, player)
+		end
+	end
+	Players.PlayerAdded:Connect(ensureSpawned)
+	for _, player in Players:GetPlayers() do
+		ensureSpawned(player)
+	end
+
 	task.spawn(function()
 		while running do
 			round += 1
