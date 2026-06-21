@@ -38,6 +38,7 @@ local round = 0
 local toSpawn = 0
 local spawned = 0
 local running = false
+local roundGeneration = 0 -- bumped when a round ends, so its spawn loop stops
 
 -- ---- broadcast ------------------------------------------------------------
 
@@ -109,6 +110,7 @@ end
 
 local function activeRound(): RoundResult
 	phase = "Active"
+	local myGen = roundGeneration
 	local playerCount = math.max(#Players:GetPlayers(), 1)
 	toSpawn = ZombieConfig.getSpawnCount(round, playerCount)
 	spawned = 0
@@ -121,7 +123,7 @@ local function activeRound(): RoundResult
 
 	-- Spawn the pool over time, never exceeding the concurrency cap.
 	task.spawn(function()
-		while running and spawned < toSpawn do
+		while running and roundGeneration == myGen and spawned < toSpawn do
 			if ZombieService.getAliveCount() < ZombieConfig.MAX_CONCURRENT then
 				if ZombieService.spawn(round) then
 					spawned += 1
@@ -152,6 +154,7 @@ local function activeRound(): RoundResult
 end
 
 local function gameOver()
+	roundGeneration += 1 -- stop the current round's in-flight spawn loop
 	phase = "GameOver"
 	print(`[RoundService] Game over at round {round}`)
 	broadcast()
