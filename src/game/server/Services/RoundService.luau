@@ -22,6 +22,7 @@ local Types = require(ReplicatedStorage.Shared.Types)
 local RemoteHandler = require(script.Parent.Parent.RemoteHandler)
 local ArenaService = require(script.Parent.ArenaService)
 local ZombieService = require(script.Parent.ZombieService)
+local DownService = require(script.Parent.DownService)
 
 local SPAWN_INTERVAL = 0.5 -- seconds between individual zombie spawns
 local MONITOR_INTERVAL = 0.3 -- round-progress poll cadence
@@ -58,18 +59,6 @@ local function broadcast(timeLeft: number?)
 end
 
 -- ---- players --------------------------------------------------------------
-
-local function countAlivePlayers(): number
-	local count = 0
-	for _, player in Players:GetPlayers() do
-		local char = player.Character
-		local humanoid = char and char:FindFirstChildOfClass("Humanoid") :: Humanoid?
-		if humanoid and humanoid.Health > 0 then
-			count += 1
-		end
-	end
-	return count
-end
 
 local function spawnPlayer(player: Player)
 	player:LoadCharacter()
@@ -137,7 +126,9 @@ local function activeRound(): RoundResult
 	-- Monitor for round completion or wipe; broadcast only when the count changes.
 	local lastRemaining = -1
 	while running do
-		if #Players:GetPlayers() > 0 and countAlivePlayers() == 0 then
+		-- Wipe only when nobody is left standing: downed players count as out (a lone
+		-- downed survivor has no one to revive them), so all-down = game over.
+		if #Players:GetPlayers() > 0 and DownService.countUpPlayers() == 0 then
 			return "gameover"
 		end
 		if spawned >= toSpawn and ZombieService.getAliveCount() == 0 then

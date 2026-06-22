@@ -18,6 +18,7 @@ local Remotes = {
 		PlayerStats = "PlayerStats", -- points/kills for the HUD
 		ShotResult = "ShotResult", -- server -> shooter: a shot connected (headshot flag) for hit markers
 		PowerUp = "PowerUp", -- server -> all: a power-up was activated (HUD banner)
+		Downed = "Downed", -- server -> player: downed/revived state for the HUD overlay
 		-- Client -> Server
 		Shoot = "Shoot", -- fire intent (aim direction)
 		Reload = "Reload", -- reload request

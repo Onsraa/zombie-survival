@@ -26,6 +26,7 @@ local Remotes = require(ReplicatedStorage.Shared.Remotes)
 local RemoteHandler = require(script.Parent.Parent.RemoteHandler)
 local ZombieService = require(script.Parent.ZombieService)
 local FireBehaviors = require(script.Parent.FireBehaviors)
+local PlayerState = require(script.Parent.PlayerState)
 
 local SHOOT_RATE_LIMIT = 150 -- anti-flood backstop; real cadence is the gun's RPM
 local MAX_ORIGIN_OFFSET = 12 -- studs the camera origin may differ from the head (anti-exploit)
@@ -92,6 +93,9 @@ local function onShoot(player: Player, payload: any)
 	local state = states[player]
 	if not state or state.reloading or state.magAmmo <= 0 then
 		return
+	end
+	if PlayerState.isDowned(player) then
+		return -- downed players can't shoot
 	end
 	local gun = GunRegistry.get(state.weaponId)
 	if not gun then

@@ -31,6 +31,7 @@ local ArenaService = require(script.Parent.ArenaService)
 local SessionService = require(script.Parent.SessionService)
 local ZombieControllerModule = require(script.Parent.ZombieController)
 local CombatModifiers = require(script.Parent.CombatModifiers)
+local PlayerState = require(script.Parent.PlayerState)
 
 local ZombieController = ZombieControllerModule.ZombieController
 type Controller = ZombieControllerModule.ZombieController
@@ -58,6 +59,7 @@ local zombiesFolder: Folder? = nil
 local alive: { [Model]: ZombieRecord } = {}
 local aliveCount = 0
 local killListener: ((position: Vector3, killer: Player?) -> ())? = nil
+local playerDamageHandler: ((humanoid: Humanoid, amount: number) -> ())? = nil
 
 -- ---- helpers --------------------------------------------------------------
 
@@ -89,6 +91,9 @@ local function findNearestTarget(fromPos: Vector3): (BasePart?, Humanoid?)
 		local char = player.Character
 		if not char then
 			continue
+		end
+		if PlayerState.isDowned(player) then
+			continue -- zombies ignore downed players (they go for whoever's still up)
 		end
 		local hum = char:FindFirstChildOfClass("Humanoid")
 		local root = char:FindFirstChild("HumanoidRootPart") :: BasePart?
@@ -164,7 +169,11 @@ local function runAi(model: Model, humanoid: Humanoid, root: BasePart, path: Pat
 				local now = os.clock()
 				if now - lastAttack >= ZombieConfig.ATTACK_COOLDOWN then
 					lastAttack = now
-					targetHum:TakeDamage(ZombieConfig.CONTACT_DAMAGE)
+					if playerDamageHandler then
+						playerDamageHandler(targetHum, ZombieConfig.CONTACT_DAMAGE)
+					else
+						targetHum:TakeDamage(ZombieConfig.CONTACT_DAMAGE)
+					end
 				end
 			else
 				if humanoid.WalkSpeed >= RUN_ANIM_THRESHOLD then
@@ -326,6 +335,12 @@ end
 -- PowerUpService roll drops without ZombieService having to depend on it.
 function ZombieService.setKillListener(fn: (position: Vector3, killer: Player?) -> ())
 	killListener = fn
+end
+
+-- Route zombie melee through this (DownService) so a fatal hit downs the player instead
+-- of killing them. Falls back to direct TakeDamage if unset.
+function ZombieService.setPlayerDamageHandler(fn: (humanoid: Humanoid, amount: number) -> ())
+	playerDamageHandler = fn
 end
 
 -- Kill every alive zombie at once (Nuke power-up). Bypasses points + the kill listener;

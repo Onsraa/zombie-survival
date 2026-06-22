@@ -38,6 +38,8 @@ local PERKS: { Perk } = {
 	{ id = "Juggernog", label = "Juggernog", cost = 2500, color = Color3.fromRGB(200, 40, 40), maxHealth = 250 },
 	{ id = "SpeedCola", label = "Speed Cola", cost = 3000, color = Color3.fromRGB(40, 170, 70), reloadMult = 0.5 },
 	{ id = "DoubleTap", label = "Double Tap", cost = 2000, color = Color3.fromRGB(220, 180, 40), fireRateMult = 1.33 },
+	-- No stat fields: the effect is a one-shot solo self-revive that DownService reads.
+	{ id = "QuickRevive", label = "Quick Revive", cost = 1500, color = Color3.fromRGB(80, 180, 230) },
 }
 
 local RING_RADIUS_FRACTION = 0.15 -- inner ring, clear of the box / pack-a-punch / wall-buys
@@ -89,6 +91,18 @@ local function buyHandler(perk: Perk): (Player) -> ()
 		end
 		set[perk.id] = true
 		applyPerk(player, perk)
+	end
+end
+
+function PerkService.hasPerk(player: Player, id: string): boolean
+	local set = owned[player]
+	return set ~= nil and set[id] == true
+end
+
+function PerkService.removePerk(player: Player, id: string)
+	local set = owned[player]
+	if set then
+		set[id] = nil
 	end
 end
 
