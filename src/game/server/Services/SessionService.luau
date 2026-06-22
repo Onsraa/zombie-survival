@@ -58,6 +58,18 @@ function SessionService.addPoints(player: Player, amount: number): number
 	return session.points
 end
 
+-- Deduct points if the player can afford it (atomic check + deduct). Returns true on
+-- success. The single authority for spending (wall-buys, box, Pack-a-Punch) — SE-2.
+function SessionService.spendPoints(player: Player, amount: number): boolean
+	local session = sessions[player]
+	if not session or amount < 0 or session.points < amount then
+		return false
+	end
+	session.points -= amount
+	broadcast(player)
+	return true
+end
+
 function SessionService.addKill(player: Player): number
 	local session = sessions[player]
 	if not session then

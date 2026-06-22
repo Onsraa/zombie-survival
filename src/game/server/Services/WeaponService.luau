@@ -170,6 +170,35 @@ function WeaponService.pushState(player: Player)
 	broadcastState(player)
 end
 
+-- The player's currently equipped gun id (nil before first spawn). For wall-buys.
+function WeaponService.getWeaponId(player: Player): string?
+	local state = states[player]
+	return state and state.weaponId
+end
+
+-- True if the current weapon could take more ammo (mag or reserve below full).
+function WeaponService.needsAmmo(player: Player): boolean
+	local state = states[player]
+	local gun = state and GunRegistry.get(state.weaponId)
+	if not state or not gun then
+		return false
+	end
+	return state.magAmmo < gun.magSize or state.reserveAmmo < gun.reserveAmmo
+end
+
+-- Top the current weapon up to full mag + reserve (wall-buy ammo purchase).
+function WeaponService.refillAmmo(player: Player)
+	local state = states[player]
+	local gun = state and GunRegistry.get(state.weaponId)
+	if not state or not gun then
+		return
+	end
+	state.magAmmo = gun.magSize
+	state.reserveAmmo = gun.reserveAmmo
+	state.reloading = false
+	broadcastState(player)
+end
+
 function WeaponService.init()
 	RemoteHandler.createRemote(Remotes.Names.WeaponState, "Event")
 	RemoteHandler.createRemote(Remotes.Names.ShotResult, "Event")

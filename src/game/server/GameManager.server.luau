@@ -19,6 +19,7 @@ local SessionService = require(Server.Services.SessionService)
 local ArenaService = require(Server.Services.ArenaService)
 local ZombieService = require(Server.Services.ZombieService)
 local WeaponService = require(Server.Services.WeaponService)
+local WallBuyService = require(Server.Services.WallBuyService)
 local RoundService = require(Server.Services.RoundService)
 local Remotes = require(ReplicatedStorage.Shared.Remotes)
 
@@ -70,6 +71,8 @@ local function start()
 	-- Prepare the zombie template + weapons, then start the co-op wave loop.
 	ZombieService.init()
 	WeaponService.init()
+	-- Wall-buys depend on the arena (placement) and weapons (give/refill on purchase).
+	WallBuyService.build()
 	RoundService.start()
 	print("[GameManager] Started")
 end
