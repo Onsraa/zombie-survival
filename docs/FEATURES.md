@@ -9,7 +9,7 @@ Per-feature spec + status. Status: ✅ done · 🚧 in progress · ⬜ planned.
 | Arena | 1 | Enclosed arena, player spawns, perimeter zombie spawn nodes (tagged) | ⬜ |
 | Zombie AI | 1 | Server Humanoid zombies, pooled, throttled `PathfindingService` to nearest player, melee contact damage | ⬜ |
 | Round loop | 1 | State machine Intermission→Active→GameOver; round ends when pool exhausted & all dead; co-op shared | ⬜ |
-| Weapons & points | 1 | Raycast hitscan, server-authoritative damage/ammo/reload; pistol + wall-buys; points earn/spend | ⬜ |
+| Weapons & points | 1 | Server-auth hitscan/ammo/reload; modular gun framework; **wall-buys** (ProximityPrompt → points spend on guns + ammo); points earn/spend | ✅ |
 | HUD & mobile UX | 1 | Responsive HUD (round/health/points/ammo/zombies-left); touch shoot/reload/interact | ⬜ |
 | Player movement | 1 | First-person stances: sprint (LeftShift) · crouch (C) · prone (X); per-stance WalkSpeed + camera drop; mobile touch buttons. Pose animations pending | ✅ (mechanics) |
 | Lobby & parties | 2 | Social hub place; create/join/leave parties; ready-up; queue | ⬜ |

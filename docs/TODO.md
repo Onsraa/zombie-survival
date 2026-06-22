@@ -45,7 +45,7 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 - [x] Pistol start; points earn via damageZombie (hit/kill, server-side — no client points remote)
 - [x] WeaponController: desktop mouse (semi/auto) + mobile ContextActionService shoot/reload
 - [x] Fixed: round spawn loop stops on game over (generation guard) — verified no over-spawn (R1 caps at 8)
-- [ ] Wall-buys: arena buy spots + Buy remote → points SPEND (rifle/shotgun/ammo)
+- [x] Wall-buys: arena pedestals + ProximityPrompt → points SPEND — gun buy (`wallBuyCost`) + ammo refill (`ammoCost`), server-auth proximity re-check (`WallBuyService`). MCP-verified: 4 pedestals, afford/deduct/swap, no charge when ammo full
 
 ## Sprint 5 — roblox-ts + React HUD ✅
 - [x] roblox-ts toolchain + @rbxts/react UI sub-project (ui/), Rojo-wired (rbxts_include + @rbxts/@rbxts-js scopes + UI out)
@@ -81,7 +81,7 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 - [x] Explicit immediate death: `BreakJointsOnDeath=false` + `ZombieController:Collapse()` → scripted ragdoll (loosen R6 joints incl. `Root` + drop impulse), or a `Death` animation if its id is set. Verified live + fresh: all 6 core joints loosen instantly, killing the ~0.2s ambiguous flop
 
 ## Next options
-- [ ] Wall-buys (Sprint 4b): arena buy spots + Buy remote → points SPEND
+- [x] Wall-buys (Sprint 4b): arena pedestals + ProximityPrompt → points SPEND (WallBuyService)
 - [ ] Upload the 6 zombie animations → AnimationId (production playback)
 - [ ] Epic 3 signature systems (perks/box/pack-a-punch/barriers/down&revive)
 - [ ] Epic 2 lobby + parties (reserved-server teleport)

@@ -95,6 +95,11 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
   **blasts the impact zone** via `explode` — AoE damage + leg-detach). First shot is exact (`spread.base = 0`
   on standard guns). Client sends `{ origin, direction }`; server stays authoritative, awards points via
   `damageZombie`.
+- **`WallBuyService`** (server): wall-buy pedestals around the arena, one per gun with a `wallBuyCost`. A
+  `ProximityPrompt` drives the purchase (mobile-native, no remote to forge); on trigger the server re-checks
+  proximity, then `SessionService.spendPoints` → `WeaponService.giveWeapon` (first buy) or `refillAmmo`
+  (already holding it). Points are spent server-side only (SE-2). Buyable guns auto-distribute, so adding a
+  wall gun is just a `wallBuyCost` in data.
 - **`WeaponController` / `WeaponEffects`** (client): input + fire modes (auto/semi/single/burst). It mirrors
   the authoritative `WeaponState` (ammo/reloading) so it never fires effects the server would reject (empty
   or reloading) and **auto-reloads** when the mag runs dry; the server stays the source of truth. There is
