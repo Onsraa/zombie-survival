@@ -58,6 +58,21 @@ eq("pierce 0 = full", Ballistics.pierceDamage(50, 0.85, 0), 50)
 near("pierce 1 = x0.85", Ballistics.pierceDamage(50, 0.85, 1), 42.5)
 near("pierce 2 = x0.85^2", Ballistics.pierceDamage(50, 0.85, 2), 36.125)
 
+print("Party model")
+local Party = require("../src/shared/Party")
+local party = Party.new(1, 100, "Alice")
+check("new -> 1 member", Party.count(party) == 1)
+check("leader = creator", party.leaderUserId == 100)
+check("not all ready (leader unready)", not Party.allReady(party))
+check("add member", Party.addMember(party, 200, "Bob") and Party.count(party) == 2)
+check("add duplicate fails", not Party.addMember(party, 200, "Bob"))
+Party.setReady(party, 100, true)
+Party.setReady(party, 200, true)
+check("all ready when both ready", Party.allReady(party))
+Party.removeMember(party, 100) -- leader leaves
+check("member removed", Party.count(party) == 1)
+check("leadership reassigned", party.leaderUserId == 200)
+
 print(`\nResults: {passed} passed, {failed} failed`)
 if failed > 0 then
 	error(`{failed} test(s) failed`)

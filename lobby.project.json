@@ -1,0 +1,24 @@
+{
+	"name": "zombie-lobby",
+	"globIgnorePaths": ["**/.*"],
+	"tree": {
+		"$className": "DataModel",
+		"ReplicatedStorage": {
+			"Shared": {
+				"$path": "src/shared"
+			}
+		},
+		"ServerScriptService": {
+			"LobbyServer": {
+				"$path": "src/lobby/server"
+			}
+		},
+		"StarterPlayer": {
+			"StarterPlayerScripts": {
+				"LobbyClient": {
+					"$path": "src/lobby/client"
+				}
+			}
+		}
+	}
+}

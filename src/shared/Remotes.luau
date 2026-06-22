@@ -23,6 +23,13 @@ local Remotes = {
 		Shoot = "Shoot", -- fire intent (aim direction)
 		Reload = "Reload", -- reload request
 		RequestSync = "RequestSync", -- HUD asks the server to push current state on mount
+		-- Lobby (party system; created by the Lobby place)
+		PartyState = "PartyState", -- server -> all: snapshot of every party in the lobby
+		CreateParty = "CreateParty",
+		JoinParty = "JoinParty",
+		LeaveParty = "LeaveParty",
+		SetReady = "SetReady",
+		StartMatch = "StartMatch",
 	},
 }
 
