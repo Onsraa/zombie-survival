@@ -12,8 +12,8 @@ Per-feature spec + status. Status: ✅ done · 🚧 in progress · ⬜ planned.
 | Weapons & points | 1 | Server-auth hitscan/ammo/reload; modular gun framework; **wall-buys** (ProximityPrompt → points spend on guns + ammo); points earn/spend | ✅ |
 | HUD & mobile UX | 1 | Responsive HUD (round/health/points/ammo/zombies-left); touch shoot/reload/interact | ⬜ |
 | Player movement | 1 | First-person stances: sprint (LeftShift) · crouch (C) · prone (X); per-stance WalkSpeed + camera drop; mobile touch buttons. Pose animations pending | ✅ (mechanics) |
-| Lobby & parties | 2 | Separate Lobby place (`lobby.project.json`): hub + party system (create/join/leave/ready, leader start) + Luau party UI; pure `Party` model (Lune-tested). Matchmaking/teleport = pt2 | 🚧 |
-| Matchmaking / reserved servers | 2 | ReserveServer + TeleportAsync(+TeleportData); seat party in Game place; retry/rejoin | ⬜ |
+| Lobby & parties | 2 | Separate Lobby place (`lobby.project.json`): hub + party system (create/join/leave/ready, leader start) + Luau party UI; pure `Party` model (Lune-tested) | ✅ |
+| Matchmaking / reserved servers | 2 | `MatchmakingService`: ReserveServer + TeleportAsync(party as TeleportData); Game reads GetJoinData. Code-complete; activates on publish + `GAME_PLACE_ID` | 🚧 |
 | Perks + Power-ups | 3 | Power-ups: drop on kill → team-wide Max Ammo / Nuke / Insta-Kill / Double Points / Carpenter (timed), HUD banner. Perks: Juggernog / Speed Cola / Double Tap / Quick Revive machines (per-player buffs, lost on respawn) | ✅ |
 | Mystery Box + Pack-a-Punch | 3 | Box: 950-pt weighted random weapon roll (wonder rare). PaP: 5000-pt upgrade to a data-variant gun (Skullcrusher/Hades/…). Shared `BuyStation`, server-auth | ✅ |
 | Barriers / windows | 3 | Each zombie breaches its perimeter window (tears planks, remove-planks anim) before chasing; players hold to repair planks for points; Carpenter power-up re-boards all | ✅ |

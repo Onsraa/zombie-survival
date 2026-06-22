@@ -147,8 +147,10 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
   `RemoteHandler`; party traffic is low-frequency).
 - **`LobbyClient`** (Lobby client): a plain-Luau party panel (create / join / leave / ready, leader start)
   that rebuilds from `PartyState`. The React HUD stays the Game place's.
-- **Matchmaking + reserved-server teleport** (pt2): leader Start → `ReserveServer` + `TeleportAsync` with
-  the party as `TeleportData`; the Game place reads `GetJoinData()`. Needs a published universe + place IDs.
+- **`MatchmakingService`** (Lobby server): leader Start → `ReserveServer` + `TeleportAsync` with the party as
+  `TeleportData`; the Game place reads `GetJoinData()` on arrival. Server-initiated, so the TeleportData is
+  trusted. Code-complete; activates once both places are published into one universe and
+  `Config/PlaceIds.GAME_PLACE_ID` is set (no-ops with a warning until then).
 
 ## Conventions / quality gates
 - `--!strict` on module APIs; no type escape hatches.
