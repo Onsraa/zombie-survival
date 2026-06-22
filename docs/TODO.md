@@ -83,7 +83,8 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 ## Next options
 - [x] Wall-buys (Sprint 4b): arena pedestals + ProximityPrompt → points SPEND (WallBuyService)
 - [ ] Upload the 6 zombie animations → AnimationId (production playback)
-- [ ] Epic 3 signature systems (perks/box/pack-a-punch/barriers/down&revive)
+- [x] Epic 3: Mystery Box + Pack-a-Punch (box weighted random roll · PaP data variants via `GunDef.upgrade` · shared `BuyStation`) — MCP-verified
+- [ ] Epic 3 remaining: perks/power-ups · barriers/windows · down & revive
 - [ ] Epic 2 lobby + parties (reserved-server teleport)
 
 ## Decisions

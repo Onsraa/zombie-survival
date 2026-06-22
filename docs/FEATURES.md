@@ -15,7 +15,7 @@ Per-feature spec + status. Status: ✅ done · 🚧 in progress · ⬜ planned.
 | Lobby & parties | 2 | Social hub place; create/join/leave parties; ready-up; queue | ⬜ |
 | Matchmaking / reserved servers | 2 | ReserveServer + TeleportAsync(+TeleportData); seat party in Game place; retry/rejoin | ⬜ |
 | Perks + Power-ups | 3 | Perk machines; dropped power-ups (Max Ammo, Insta-Kill, Nuke, Double Points) | ⬜ |
-| Mystery Box + Pack-a-Punch | 3 | Random weapon roll; weapon upgrade tier | ⬜ |
+| Mystery Box + Pack-a-Punch | 3 | Box: 950-pt weighted random weapon roll (wonder rare). PaP: 5000-pt upgrade to a data-variant gun (Skullcrusher/Hades/…). Shared `BuyStation`, server-auth | ✅ |
 | Barriers / windows | 3 | Zombies breach boarded windows; players repair for points | ⬜ |
 | Down & revive | 3 | Downed state, bleed-out timer, teammate revive, co-op fail when all down | ⬜ |
 | Persistence | 4 | ProfileStore session-locked: best round, kills, unlock currency | ⬜ |

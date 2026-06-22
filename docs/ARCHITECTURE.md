@@ -86,8 +86,8 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
 - **Weapons (modular, data-driven)**: guns are `GunDef` entries in `shared/Weapons/Guns/*` (by category),
   aggregated by `GunRegistry`. Each has fire mode, RPM, damage, penetration, **spread** (an accuracy cone
   that blooms with sustained fire — the real COD accuracy mechanic), a schema-ready `recoil` profile (for a
-  future viewmodel animation — **not** a camera kick), ammo, a Pack-a-Punch-ready `upgrade` field, and asset
-  placeholders. Pure math is in `Weapons/Ballistics`
+  future viewmodel animation — **not** a camera kick), ammo, an `upgrade` field naming the gun's Pack-a-Punch
+  data variant, and asset placeholders. Pure math is in `Weapons/Ballistics`
   (Lune-tested). Adding a standard gun = one data entry; exotic guns = a data entry + a fire behavior.
 - **`WeaponService`** (server): per-player state, RPM cooldown, spread bloom, **camera-origin raycast**
   (origin validated near the head, so shots land on the crosshair), then dispatch to a **fire behavior**
@@ -95,11 +95,15 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
   **blasts the impact zone** via `explode` — AoE damage + leg-detach). First shot is exact (`spread.base = 0`
   on standard guns). Client sends `{ origin, direction }`; server stays authoritative, awards points via
   `damageZombie`.
-- **`WallBuyService`** (server): wall-buy pedestals around the arena, one per gun with a `wallBuyCost`. A
-  `ProximityPrompt` drives the purchase (mobile-native, no remote to forge); on trigger the server re-checks
-  proximity, then `SessionService.spendPoints` → `WeaponService.giveWeapon` (first buy) or `refillAmmo`
-  (already holding it). Points are spent server-side only (SE-2). Buyable guns auto-distribute, so adding a
-  wall gun is just a `wallBuyCost` in data.
+- **Buy stations** (server): `BuyStation` builds a pedestal + `ProximityPrompt` + label and, on trigger,
+  re-checks the buyer is at the pedestal (anti-exploit) before calling the handler — shared by all three
+  spend systems. Points are spent server-side only via `SessionService.spendPoints` (SE-2):
+  - **`WallBuyService`** — one pedestal per gun with a `wallBuyCost`; spend → `giveWeapon` (first buy) or
+    `refillAmmo` (already holding it). Buyable guns auto-distribute; adding a wall gun is a data field.
+  - **`MysteryBoxService`** — 950-point weighted random roll from the base-gun pool (no starter / no PaP
+    variants; wonder weapons rare), a short reveal on the label, then `giveWeapon`.
+  - **`PackAPunchService`** — 5000-point upgrade of the held gun to its `GunDef.upgrade` data variant
+    (Skullcrusher, Hades, Mustang & Sally, …); upgraded guns have no `upgrade`, so they can't be re-PaP'd.
 - **`WeaponController` / `WeaponEffects`** (client): input + fire modes (auto/semi/single/burst). It mirrors
   the authoritative `WeaponState` (ammo/reloading) so it never fires effects the server would reject (empty
   or reloading) and **auto-reloads** when the mag runs dry; the server stays the source of truth. There is
