@@ -10,6 +10,7 @@ export const RemoteNames = {
 	RequestSync: "RequestSync",
 	ShotResult: "ShotResult",
 	PowerUp: "PowerUp",
+	Downed: "Downed",
 } as const;
 
 export interface RoundSnapshot {
@@ -39,6 +40,11 @@ export interface PowerUpSnapshot {
 	g: number;
 	b: number;
 	duration: number;
+}
+
+export interface DownedSnapshot {
+	downed: boolean;
+	bleedTime?: number;
 }
 
 export function getRemote(name: string): RemoteEvent | undefined {

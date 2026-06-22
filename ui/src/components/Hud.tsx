@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "@rbxts/react";
-import { getRemote, RemoteNames, RoundSnapshot, WeaponSnapshot, StatsSnapshot, PowerUpSnapshot } from "shared/remotes";
+import {
+	getRemote,
+	RemoteNames,
+	RoundSnapshot,
+	WeaponSnapshot,
+	StatsSnapshot,
+	PowerUpSnapshot,
+	DownedSnapshot,
+} from "shared/remotes";
 
 const Players = game.GetService("Players");
 
@@ -133,6 +141,7 @@ export function Hud() {
 	const [maxHealth, setMaxHealth] = useState(100);
 	const [hitMarker, setHitMarker] = useState<{ headshot: boolean } | undefined>(undefined);
 	const [powerUp, setPowerUp] = useState<PowerUpSnapshot | undefined>(undefined);
+	const [downed, setDowned] = useState(false);
 
 	useEffect(() => {
 		const conns: RBXScriptConnection[] = [];
@@ -160,7 +169,13 @@ export function Hud() {
 				}),
 			);
 
-		const player = Players.LocalPlayer;
+		const downedRemote = getRemote(RemoteNames.Downed);
+			if (downedRemote)
+				conns.push(
+					downedRemote.OnClientEvent.Connect((s) => setDowned((s as DownedSnapshot).downed)),
+				);
+
+			const player = Players.LocalPlayer;
 		let humanoidConn: RBXScriptConnection | undefined;
 		const bindCharacter = (char: Model) => {
 			const humanoid = char.WaitForChild("Humanoid", 5) as Humanoid | undefined;
@@ -271,7 +286,41 @@ export function Hud() {
 				</frame>
 			</Panel>
 
-			<Panel anchor={new Vector2(1, 1)} position={UDim2.fromScale(0.98, 0.97)} size={UDim2.fromScale(0.22, 0.06)}>
+			{downed ? (
+					<frame
+						Size={UDim2.fromScale(1, 1)}
+						BackgroundColor3={Color3.fromRGB(120, 0, 0)}
+						BackgroundTransparency={0.5}
+						BorderSizePixel={0}
+						ZIndex={50}
+					>
+						<textlabel
+							AnchorPoint={new Vector2(0.5, 0.5)}
+							Position={UDim2.fromScale(0.5, 0.42)}
+							Size={UDim2.fromScale(0.6, 0.12)}
+							BackgroundTransparency={1}
+							Text={"YOU ARE DOWN"}
+							TextColor3={new Color3(1, 1, 1)}
+							TextScaled={true}
+							Font={Enum.Font.GothamBlack}
+							TextStrokeTransparency={0.2}
+							ZIndex={51}
+						/>
+						<textlabel
+							AnchorPoint={new Vector2(0.5, 0.5)}
+							Position={UDim2.fromScale(0.5, 0.54)}
+							Size={UDim2.fromScale(0.5, 0.05)}
+							BackgroundTransparency={1}
+							Text={"Hold on for a revive"}
+							TextColor3={Color3.fromRGB(255, 200, 200)}
+							TextScaled={true}
+							Font={Enum.Font.GothamMedium}
+							ZIndex={51}
+						/>
+					</frame>
+				) : undefined}
+
+				<Panel anchor={new Vector2(1, 1)} position={UDim2.fromScale(0.98, 0.97)} size={UDim2.fromScale(0.22, 0.06)}>
 				<Label
 					text={ammoText}
 					color={weapon !== undefined && weapon.reloading ? DANGER : WHITE}
