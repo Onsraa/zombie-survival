@@ -16,6 +16,19 @@ rojo serve
 
 For more help, check out [the Rojo documentation](https://rojo.space/docs).
 
+### Places (two-place universe)
+
+The game is split across two Rojo places that share `src/shared`:
+
+```bash
+rojo build default.project.json -o game.rbxlx   # Game place (rounds, combat)
+rojo build lobby.project.json   -o lobby.rbxlx   # Lobby place (hub + parties)
+```
+
+Open each in Studio and `rojo serve <project>` to develop it. Reserved-server teleport
+between them (lobby → game) is wired in Epic 2 pt2 and activates once both places are
+published into one universe and `GAME_PLACE_ID` is set.
+
 ## Controls
 
 | Action | Desktop | Mobile |

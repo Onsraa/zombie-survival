@@ -89,7 +89,8 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 - [x] Epic 3: Down & revive (downed/ragdoll/bleed-out · teammate revive prompt · co-op wipe = all-down · Quick Revive solo self-revive · `PlayerState` leaf + routed melee) — MCP-verified
 - [x] Epic 3: Barriers/windows (each zombie breaches its perimeter window before chasing · repair planks for points · Carpenter power-up) — MCP-verified (live zombies tore 30 planks, 5/6 breached)
 - [x] **Epic 3 signature systems COMPLETE**: Mystery Box · Pack-a-Punch · Power-ups · Perks · Down & Revive · Barriers
-- [ ] Epic 2 lobby + parties (reserved-server teleport)
+- [x] Epic 2 pt1: Lobby place (`lobby.project.json`) — party system (create/join/leave/ready/leader-start) · pure `Party` model (Lune-tested, 27/27) · Luau party UI. Gate-verified (open the lobby place in Studio to play-test)
+- [ ] Epic 2 pt2: matchmaking + reserved-server teleport (`ReserveServer`/`TeleportAsync`/`TeleportData` + game `GetJoinData`) — needs published universe + `GAME_PLACE_ID`
 
 ## Decisions
 - UI = roblox-ts + **@rbxts/react**, hybrid (UI ↔ gameplay only via RemoteEvents). Toolchain stood up at **S5**. Node v24 / npm 11 present.

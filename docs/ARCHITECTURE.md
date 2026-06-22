@@ -136,6 +136,20 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
   Bound via `ContextActionService` with auto touch buttons for mobile. Speeds in `Constants`
   (walk 16 / crouch 8 / prone 4 / sprint 22).
 
+## Lobby & parties (Epic 2)
+- **Two places, one universe.** `default.project.json` builds the **Game** place; `lobby.project.json`
+  builds the **Lobby** place. Both map `ReplicatedStorage.Shared → src/shared` (Remotes, Party, Constants),
+  so remote names and the pure `Party` model are shared.
+- **`Party`** (`src/shared`, pure): party data model + ops (create / add / remove / ready / allReady),
+  Lune-tested; leadership reassigns when the leader leaves.
+- **`PartyService`** (Lobby server): owns the live parties, broadcasts a `PartyState` snapshot of every
+  party to all clients. Creates its own lobby remotes (the Lobby place doesn't include the Game's
+  `RemoteHandler`; party traffic is low-frequency).
+- **`LobbyClient`** (Lobby client): a plain-Luau party panel (create / join / leave / ready, leader start)
+  that rebuilds from `PartyState`. The React HUD stays the Game place's.
+- **Matchmaking + reserved-server teleport** (pt2): leader Start → `ReserveServer` + `TeleportAsync` with
+  the party as `TeleportData`; the Game place reads `GetJoinData()`. Needs a published universe + place IDs.
+
 ## Conventions / quality gates
 - `--!strict` on module APIs; no type escape hatches.
 - `task.*` only (never `wait`/`spawn`/`delay`).
