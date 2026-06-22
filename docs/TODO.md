@@ -87,7 +87,8 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 - [x] Epic 3: Power-ups (drop-on-kill → team-wide Max Ammo / Nuke / Insta-Kill / Double Points · `CombatModifiers` flags · HUD banner) — MCP-verified
 - [x] Epic 3: Perks (Juggernog / Speed Cola / Double Tap via `BuyStation` · per-player `WeaponService` reload/fire-rate modifiers · Jugg max-health · lost on respawn) — MCP-verified
 - [x] Epic 3: Down & revive (downed/ragdoll/bleed-out · teammate revive prompt · co-op wipe = all-down · Quick Revive solo self-revive · `PlayerState` leaf + routed melee) — MCP-verified
-- [ ] Epic 3 remaining: barriers/windows (last signature system)
+- [x] Epic 3: Barriers/windows (each zombie breaches its perimeter window before chasing · repair planks for points · Carpenter power-up) — MCP-verified (live zombies tore 30 planks, 5/6 breached)
+- [x] **Epic 3 signature systems COMPLETE**: Mystery Box · Pack-a-Punch · Power-ups · Perks · Down & Revive · Barriers
 - [ ] Epic 2 lobby + parties (reserved-server teleport)
 
 ## Decisions

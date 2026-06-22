@@ -119,6 +119,11 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
   "downed" flag (read by Zombie/Weapon services without a cycle); zombie melee is routed through `DownService`
   via ZombieService's registered player-damage handler. `RoundService` ends the game only when **no player is
   up** (everyone downed/dead = co-op wipe); bled-out players respawn next round if the team survives.
+- **`BarrierService`** (server): boarded windows on the perimeter. Each newly spawned zombie is assigned a
+  barrier and **breaches** it — tearing planks (the remove-planks animation) before it can chase
+  (the breach phase in `ZombieService.runAi`). Players hold a repair prompt to re-board planks for points; the
+  **Carpenter** power-up re-boards every barrier. MVP: a logical gate at the spawn point — planks are visual,
+  the AI breach phase is the real gate (no physical hole in the sealed wall).
 - **`WeaponController` / `WeaponEffects`** (client): input + fire modes (auto/semi/single/burst). It mirrors
   the authoritative `WeaponState` (ammo/reloading) so it never fires effects the server would reject (empty
   or reloading) and **auto-reloads** when the mag runs dry; the server stays the source of truth. There is
