@@ -85,7 +85,8 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 - [ ] Upload the 6 zombie animations → AnimationId (production playback)
 - [x] Epic 3: Mystery Box + Pack-a-Punch (box weighted random roll · PaP data variants via `GunDef.upgrade` · shared `BuyStation`) — MCP-verified
 - [x] Epic 3: Power-ups (drop-on-kill → team-wide Max Ammo / Nuke / Insta-Kill / Double Points · `CombatModifiers` flags · HUD banner) — MCP-verified
-- [ ] Epic 3 remaining: perk machines · barriers/windows · down & revive
+- [x] Epic 3: Perks (Juggernog / Speed Cola / Double Tap via `BuyStation` · per-player `WeaponService` reload/fire-rate modifiers · Jugg max-health · lost on respawn) — MCP-verified
+- [ ] Epic 3 remaining: barriers/windows · down & revive (Quick Revive perk lands with revive)
 - [ ] Epic 2 lobby + parties (reserved-server teleport)
 
 ## Decisions

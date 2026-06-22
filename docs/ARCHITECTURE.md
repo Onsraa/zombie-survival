@@ -104,6 +104,10 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
     variants; wonder weapons rare), a short reveal on the label, then `giveWeapon`.
   - **`PackAPunchService`** — 5000-point upgrade of the held gun to its `GunDef.upgrade` data variant
     (Skullcrusher, Hades, Mustang & Sally, …); upgraded guns have no `upgrade`, so they can't be re-PaP'd.
+  - **`PerkService`** — perk machines granting a persistent per-player buff until respawn: Juggernog
+    (max health 100→250), Speed Cola (0.5× reload), Double Tap (1.33× fire rate). Reload/fire-rate run
+    through per-player `WeaponService` multipliers (fire-rate is mirrored to the client via `WeaponState`
+    so the client's cadence matches the server's); perks clear on respawn.
 - **`PowerUpService`** + **`CombatModifiers`** (server): on a zombie kill (via `ZombieService`'s kill hook) a
   small chance drops a floating pickup; the first touch fires a team-wide effect — Max Ammo (refill all),
   Nuke (`ZombieService.nukeKill` + points), Insta-Kill and Double Points (timed flags in `CombatModifiers`,
