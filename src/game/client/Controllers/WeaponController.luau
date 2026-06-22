@@ -29,10 +29,31 @@ local lastFire = 0
 local firing = false
 local bursting = false
 
+-- Mirror of the server-authoritative WeaponState (kept in sync by the WeaponState
+-- remote). The client gates fire on this so it never shows a shot the server rejects.
+local magAmmo = 0
+local reserveAmmo = 0
+local reloading = false
+
+-- Ask the server to reload (server re-validates). Used by manual R and auto-reload.
+local function requestReload()
+	if reloadRemote and not reloading and reserveAmmo > 0 then
+		reloadRemote:FireServer()
+	end
+end
+
 local function fireOnce()
 	local gun = currentGun
 	local camera = Workspace.CurrentCamera
 	if not gun or not camera or not shootRemote then
+		return
+	end
+	-- Don't fire effects/remote the server would reject (reloading or empty).
+	if reloading then
+		return
+	end
+	if magAmmo <= 0 then
+		requestReload() -- auto-reload when trying to fire on empty
 		return
 	end
 	local now = os.clock()
@@ -40,6 +61,7 @@ local function fireOnce()
 		return
 	end
 	lastFire = now
+	magAmmo -= 1 -- optimistic; the server's WeaponState broadcast reconciles the truth
 	-- Aim from the camera so the shot lines up with the center crosshair.
 	shootRemote:FireServer({
 		origin = camera.CFrame.Position,
@@ -82,8 +104,8 @@ local function onAction(
 			firing = false
 		end
 	elseif actionName == "Reload" then
-		if inputState == Enum.UserInputState.Begin and reloadRemote then
-			reloadRemote:FireServer()
+		if inputState == Enum.UserInputState.Begin then
+			requestReload()
 		end
 	end
 	return Enum.ContextActionResult.Sink
@@ -96,8 +118,22 @@ function WeaponController.start()
 	local weaponState = Remotes.get(Remotes.Names.WeaponState)
 	if weaponState then
 		weaponState.OnClientEvent:Connect(function(state)
-			if typeof(state) == "table" and type(state.weaponId) == "string" then
+			if typeof(state) ~= "table" then
+				return
+			end
+			if type(state.weaponId) == "string" then
 				currentGun = GunRegistry.get(state.weaponId)
+			end
+			if type(state.magAmmo) == "number" then
+				magAmmo = state.magAmmo
+			end
+			if type(state.reserveAmmo) == "number" then
+				reserveAmmo = state.reserveAmmo
+			end
+			reloading = state.reloading == true
+			-- Auto-reload the instant the mag runs dry and there's reserve to load.
+			if magAmmo <= 0 and reserveAmmo > 0 and not reloading then
+				requestReload()
 			end
 		end)
 	end
