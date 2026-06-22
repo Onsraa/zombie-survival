@@ -18,6 +18,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Party = require(ReplicatedStorage.Shared.Party)
 local Remotes = require(ReplicatedStorage.Shared.Remotes)
+local MatchmakingService = require(script.Parent.MatchmakingService)
 
 local PartyService = {}
 
@@ -123,8 +124,7 @@ local function onStart(player: Player)
 	if not Party.allReady(party) then
 		return
 	end
-	-- pt2: MatchmakingService.start(party) -> ReserveServer + TeleportAsync.
-	print(`[PartyService] Party {party.id} ready to start ({Party.count(party)} players) — matchmaking in pt2`)
+	MatchmakingService.start(party) -- ReserveServer + TeleportAsync into a fresh Game server
 end
 
 function PartyService.init()

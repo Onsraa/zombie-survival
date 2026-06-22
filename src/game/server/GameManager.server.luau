@@ -31,6 +31,12 @@ local Remotes = require(ReplicatedStorage.Shared.Remotes)
 
 local function onPlayerAdded(player: Player)
 	SessionService.create(player)
+	-- If they arrived via a lobby party teleport, the party rode along in TeleportData
+	-- (server-initiated → trusted). Drop-in co-op already spawns them; just note it for now.
+	local joinData = player:GetJoinData()
+	if typeof(joinData.TeleportData) == "table" then
+		print(`[GameManager] {player.Name} arrived from a lobby party`)
+	end
 	-- Hand the client a green light once its server session exists.
 	RemoteHandler.fireClient(Remotes.Names.SessionReady, player)
 	print(`[GameManager] Session ready for {player.Name}`)
