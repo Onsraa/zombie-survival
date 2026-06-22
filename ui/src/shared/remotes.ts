@@ -9,6 +9,7 @@ export const RemoteNames = {
 	PlayerStats: "PlayerStats",
 	RequestSync: "RequestSync",
 	ShotResult: "ShotResult",
+	PowerUp: "PowerUp",
 } as const;
 
 export interface RoundSnapshot {
@@ -30,6 +31,14 @@ export interface WeaponSnapshot {
 export interface StatsSnapshot {
 	points: number;
 	kills: number;
+}
+
+export interface PowerUpSnapshot {
+	label: string;
+	r: number;
+	g: number;
+	b: number;
+	duration: number;
 }
 
 export function getRemote(name: string): RemoteEvent | undefined {

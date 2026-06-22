@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "@rbxts/react";
-import { getRemote, RemoteNames, RoundSnapshot, WeaponSnapshot, StatsSnapshot } from "shared/remotes";
+import { getRemote, RemoteNames, RoundSnapshot, WeaponSnapshot, StatsSnapshot, PowerUpSnapshot } from "shared/remotes";
 
 const Players = game.GetService("Players");
 
@@ -132,6 +132,7 @@ export function Hud() {
 	const [health, setHealth] = useState(100);
 	const [maxHealth, setMaxHealth] = useState(100);
 	const [hitMarker, setHitMarker] = useState<{ headshot: boolean } | undefined>(undefined);
+	const [powerUp, setPowerUp] = useState<PowerUpSnapshot | undefined>(undefined);
 
 	useEffect(() => {
 		const conns: RBXScriptConnection[] = [];
@@ -179,6 +180,21 @@ export function Hud() {
 		const sync = getRemote(RemoteNames.RequestSync);
 		sync?.FireServer();
 
+			let powerId = 0;
+			const powerRemote = getRemote(RemoteNames.PowerUp);
+			if (powerRemote)
+				conns.push(
+					powerRemote.OnClientEvent.Connect((s) => {
+						const snap = s as PowerUpSnapshot;
+						powerId += 1;
+						const myId = powerId;
+						setPowerUp(snap);
+						task.delay(math.max(snap.duration, 3), () => {
+							if (powerId === myId) setPowerUp(undefined);
+						});
+					}),
+				);
+
 		return () => {
 			for (const c of conns) c.Disconnect();
 			humanoidConn?.Disconnect();
@@ -204,6 +220,25 @@ export function Hud() {
 		<frame Size={UDim2.fromScale(1, 1)} BackgroundTransparency={1} BorderSizePixel={0}>
 			<Crosshair />
 			{hitMarker !== undefined ? <HitMarker headshot={hitMarker.headshot} /> : undefined}
+
+				{powerUp !== undefined ? (
+					<frame
+						AnchorPoint={new Vector2(0.5, 0)}
+						Position={UDim2.fromScale(0.5, 0.16)}
+						Size={UDim2.fromScale(0.44, 0.06)}
+						BackgroundTransparency={1}
+					>
+						<textlabel
+							Size={UDim2.fromScale(1, 1)}
+							BackgroundTransparency={1}
+							Text={powerUp.label}
+							TextColor3={Color3.fromRGB(powerUp.r, powerUp.g, powerUp.b)}
+							TextScaled={true}
+							Font={Enum.Font.GothamBlack}
+							TextStrokeTransparency={0.3}
+						/>
+					</frame>
+				) : undefined}
 
 			<Panel anchor={new Vector2(0.5, 0)} position={UDim2.fromScale(0.5, 0.03)} size={UDim2.fromScale(0.3, 0.07)}>
 				<Label text={roundText} color={WHITE} />
