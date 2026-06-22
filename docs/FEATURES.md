@@ -17,7 +17,7 @@ Per-feature spec + status. Status: ✅ done · 🚧 in progress · ⬜ planned.
 | Perks + Power-ups | 3 | Power-ups: drop on kill → team-wide Max Ammo / Nuke / Insta-Kill / Double Points (timed), HUD banner. Perks: Juggernog / Speed Cola / Double Tap machines (per-player buffs, lost on respawn) | ✅ |
 | Mystery Box + Pack-a-Punch | 3 | Box: 950-pt weighted random weapon roll (wonder rare). PaP: 5000-pt upgrade to a data-variant gun (Skullcrusher/Hades/…). Shared `BuyStation`, server-auth | ✅ |
 | Barriers / windows | 3 | Zombies breach boarded windows; players repair for points | ⬜ |
-| Down & revive | 3 | Downed state, bleed-out timer, teammate revive, co-op fail when all down | ⬜ |
+| Down & revive | 3 | Fatal hit → downed (ragdoll, can't move/shoot, 30s bleed-out); teammate revive prompt; co-op wipe only when all down; Quick Revive solo self-revive; bled-out respawn next round | ✅ |
 | Persistence | 4 | ProfileStore session-locked: best round, kills, unlock currency | ⬜ |
 | Monetization (loot boxes) | 4 | Weapon/clothing skins, `ProcessReceipt`, owned inventory + equip, lobby shop | ⬜ |
 | Performance hardening | 5 | Parallel Luau (if needed), StreamingEnabled, part-count audit | ⬜ |

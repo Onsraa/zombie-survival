@@ -113,6 +113,12 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
   Nuke (`ZombieService.nukeKill` + points), Insta-Kill and Double Points (timed flags in `CombatModifiers`,
   which `ZombieService.damageZombie` reads each hit). A `PowerUp` remote drives the HUD banner.
   `CombatModifiers` is a leaf module so ZombieService/PowerUpService share it without a require cycle.
+- **`DownService`** + **`PlayerState`** (server): a fatal zombie hit **downs** a player instead of killing
+  them — ragdolled (`PlatformStand`), frozen, can't shoot, bleeding out (30s). A teammate holds a revive
+  `ProximityPrompt`; solo, the **Quick Revive** perk grants one self-revive. The `PlayerState` leaf holds the
+  "downed" flag (read by Zombie/Weapon services without a cycle); zombie melee is routed through `DownService`
+  via ZombieService's registered player-damage handler. `RoundService` ends the game only when **no player is
+  up** (everyone downed/dead = co-op wipe); bled-out players respawn next round if the team survives.
 - **`WeaponController` / `WeaponEffects`** (client): input + fire modes (auto/semi/single/burst). It mirrors
   the authoritative `WeaponState` (ammo/reloading) so it never fires effects the server would reject (empty
   or reloading) and **auto-reloads** when the mag runs dry; the server stays the source of truth. There is
