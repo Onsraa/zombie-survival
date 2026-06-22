@@ -16,13 +16,15 @@
 	:Attack() on a melee hit. The head detaches automatically near death; legs detach
 	on explosion via :DetachLegs().
 
-	NOTE: KeyframeSequenceProvider IDs are temporary and Studio-only. For animations
-	to play in a published game, upload the 6 KeyframeSequences and reference them as
-	Animation objects (with AnimationId) under ReplicatedStorage.Assets.Animations.
+	ANIMATIONS: playback prefers uploaded AnimationIds from Config/ZombieAnimations; any
+	id left blank falls back to the committed KeyframeSequence via KeyframeSequenceProvider
+	(Studio preview only — won't play in a published game until the id is filled).
 ]]
 
 local KeyframeSequenceProvider = game:GetService("KeyframeSequenceProvider")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local ZombieAnimations = require(ReplicatedStorage.Shared.Config.ZombieAnimations)
 
 local STATE = {
 	IDLE = "Idle",
@@ -37,6 +39,18 @@ local STATE = {
 
 local HEAD_DETACH_THRESHOLD = 0.15
 local PART_CLEANUP_DELAY = 5
+local DEATH_SHOVE = 14 -- impulse so a ragdolled corpse visibly drops (the no-death-anim case)
+-- The R6 rig joints to loosen for a death ragdoll (cosmetic welds are left intact).
+-- "Root" is this rig's root joint; "RootJoint" is the stock-R6 name — cover both.
+local R6_JOINT_NAMES = {
+	Root = true,
+	RootJoint = true,
+	Neck = true,
+	["Left Shoulder"] = true,
+	["Right Shoulder"] = true,
+	["Left Hip"] = true,
+	["Right Hip"] = true,
+}
 
 local ZombieController = {}
 ZombieController.__index = ZombieController
@@ -73,6 +87,7 @@ local ANIM_NAMES = {
 	[STATE.ATTACK_STANDING] = "ZombieAttackStanding",
 	[STATE.ATTACK_CRAWLING] = "ZombieAttackCrawling",
 	[STATE.REMOVE_PLANKS] = "ZombieRemovePlanks",
+	[STATE.DEAD] = "ZombieDeath",
 }
 
 -- Playback speed per animated state (defaults to 1.0).
@@ -98,6 +113,22 @@ local function resolveAnimation(asset: Instance): Animation?
 			animation.AnimationId = id
 			return animation
 		end
+	end
+	return nil
+end
+
+-- Build a playable Animation for a clip name: prefer the uploaded AnimationId from
+-- Config/ZombieAnimations; fall back to the committed KeyframeSequence (Studio preview).
+local function buildAnimation(animName: string, animFolder: Instance?): Animation?
+	local id = ZombieAnimations[animName]
+	if type(id) == "string" and id ~= "" then
+		local animation = Instance.new("Animation")
+		animation.AnimationId = id
+		return animation
+	end
+	local asset = animFolder and animFolder:FindFirstChild(animName)
+	if asset then
+		return resolveAnimation(asset)
 	end
 	return nil
 end
@@ -139,23 +170,19 @@ function ZombieController.LoadAnimations(self: ZombieController)
 		animator.Parent = humanoid
 	end
 
+	-- animFolder may be nil — uploaded AnimationIds (from config) don't need it; the
+	-- KeyframeSequence fallback inside buildAnimation does.
 	local assets = ReplicatedStorage:FindFirstChild("Assets")
 	local animFolder = assets and assets:FindFirstChild("Animations")
-	if not animFolder then
-		return
-	end
 
 	for stateName, animName in ANIM_NAMES do
-		local asset = animFolder:FindFirstChild(animName)
-		if asset then
-			local animation = resolveAnimation(asset)
-			if animation then
-				local ok, track = pcall(function()
-					return animator:LoadAnimation(animation)
-				end)
-				if ok and track then
-					self.Animations[stateName] = track
-				end
+		local animation = buildAnimation(animName, animFolder)
+		if animation then
+			local ok, track = pcall(function()
+				return animator:LoadAnimation(animation)
+			end)
+			if ok and track then
+				self.Animations[stateName] = track
 			end
 		end
 	end
@@ -180,7 +207,7 @@ function ZombieController.SetupDamageDetection(self: ZombieController)
 			self:DetachHead()
 		end
 		if health <= 0 then
-			self:SetState(STATE.DEAD)
+			self:Collapse()
 		end
 	end)
 end
@@ -250,6 +277,46 @@ function ZombieController.DetachLegs(self: ZombieController)
 
 	self.IsCrawling = true
 	self:SetState(STATE.CRAWLING)
+end
+
+-- Make death explicit the instant the killing shot lands. Prefer a collapse animation
+-- (a clean "fall to the floor"); fall back to a scripted ragdoll so the kill always reads
+-- clearly instead of the default BreakJointsOnDeath gravity flop (the ~0.2s ambiguity).
+function ZombieController.Collapse(self: ZombieController)
+	if self.CurrentState == STATE.DEAD then
+		return
+	end
+	self.CurrentState = STATE.DEAD
+	self.Attacking = false
+	self.RemovingPlanks = false
+
+	if self.CurrentAnimationTrack and self.CurrentAnimationTrack.IsPlaying then
+		self.CurrentAnimationTrack:Stop()
+	end
+
+	local deathTrack = self.Animations[STATE.DEAD]
+	if deathTrack then
+		deathTrack.Priority = Enum.AnimationPriority.Action
+		deathTrack:Play()
+		self.CurrentAnimationTrack = deathTrack
+	else
+		self:Ragdoll()
+	end
+end
+
+-- Loosen the six R6 joints so the body goes limp at once, with a shove so it drops
+-- visibly. Cosmetic welds (eyes/mouth/hands) are left intact.
+function ZombieController.Ragdoll(self: ZombieController)
+	for _, descendant in self.Model:GetDescendants() do
+		if descendant:IsA("Motor6D") and R6_JOINT_NAMES[descendant.Name] then
+			descendant.Enabled = false
+		end
+	end
+	local torso = self.Model:FindFirstChild("Torso") :: BasePart?
+	if torso then
+		local back = if self.HumanoidRootPart then -self.HumanoidRootPart.CFrame.LookVector else Vector3.zero
+		torso.AssemblyLinearVelocity = back * DEATH_SHOVE + Vector3.new(0, -DEATH_SHOVE * 0.3, 0)
+	end
 end
 
 function ZombieController.SetState(self: ZombieController, newState: string)
@@ -340,8 +407,9 @@ function ZombieController.Destroy(self: ZombieController)
 		self._connection:Disconnect()
 		self._connection = nil
 	end
-	for _, track in self.Animations do
-		if track.IsPlaying then
+	for state, track in self.Animations do
+		-- Leave the death track playing through the corpse linger; stop everything else.
+		if state ~= STATE.DEAD and track.IsPlaying then
 			track:Stop()
 		end
 	end

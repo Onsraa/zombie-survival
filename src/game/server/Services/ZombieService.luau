@@ -133,6 +133,9 @@ local function createTemplate(): Model?
 	local humanoid = getHumanoid(model)
 	if humanoid then
 		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+		-- ZombieController.Collapse owns the death (immediate + readable), not the default
+		-- gravity flop — so the kill never reads as a ~0.2s ambiguous delay.
+		humanoid.BreakJointsOnDeath = false
 	end
 
 	model.Parent = ServerStorage
