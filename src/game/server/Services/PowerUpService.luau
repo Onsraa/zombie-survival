@@ -24,6 +24,7 @@ local CombatModifiers = require(script.Parent.CombatModifiers)
 local SessionService = require(script.Parent.SessionService)
 local WeaponService = require(script.Parent.WeaponService)
 local ZombieService = require(script.Parent.ZombieService)
+local BarrierService = require(script.Parent.BarrierService)
 
 type PowerUp = {
 	id: string,
@@ -36,6 +37,7 @@ local DROP_CHANCE = 0.04 -- per kill
 local MAX_ACTIVE_DROPS = 2
 local PICKUP_LIFETIME = 25
 local NUKE_POINTS = 400
+local CARPENTER_POINTS = 200
 local EFFECT_DURATION = 30
 
 local POWERUPS: { PowerUp } = {
@@ -43,6 +45,7 @@ local POWERUPS: { PowerUp } = {
 	{ id = "Nuke", label = "NUKE", color = Color3.fromRGB(255, 130, 40), duration = 0 },
 	{ id = "InstaKill", label = "INSTA-KILL", color = Color3.fromRGB(255, 60, 60), duration = EFFECT_DURATION },
 	{ id = "DoublePoints", label = "DOUBLE POINTS", color = Color3.fromRGB(255, 215, 0), duration = EFFECT_DURATION },
+	{ id = "Carpenter", label = "CARPENTER", color = Color3.fromRGB(150, 110, 60), duration = 0 },
 }
 
 local PowerUpService = {}
@@ -102,6 +105,11 @@ local function applyEffect(powerup: PowerUp)
 				CombatModifiers.setPointsMultiplier(1)
 			end
 		end)
+	elseif powerup.id == "Carpenter" then
+		BarrierService.repairAll()
+		for _, player in Players:GetPlayers() do
+			SessionService.addPoints(player, CARPENTER_POINTS)
+		end
 	end
 end
 

@@ -32,6 +32,7 @@ local SessionService = require(script.Parent.SessionService)
 local ZombieControllerModule = require(script.Parent.ZombieController)
 local CombatModifiers = require(script.Parent.CombatModifiers)
 local PlayerState = require(script.Parent.PlayerState)
+local BarrierService = require(script.Parent.BarrierService)
 
 local ZombieController = ZombieControllerModule.ZombieController
 type Controller = ZombieControllerModule.ZombieController
@@ -39,6 +40,8 @@ type Controller = ZombieControllerModule.ZombieController
 local SPAWN_HEIGHT_OFFSET = 3 -- lift above the node so the rig settles onto the floor
 local DEATH_LINGER = 1.5 -- seconds a corpse remains before cleanup
 local RUN_ANIM_THRESHOLD = 16 -- WalkSpeed at/above which the run animation plays
+local TEAR_RANGE = 8 -- studs; within this a zombie tears its barrier's planks
+local TEAR_INTERVAL = 1.5 -- seconds between plank tears
 
 local AGENT_PARAMS = {
 	AgentRadius = 2,
@@ -151,9 +154,31 @@ end
 
 -- ---- AI -------------------------------------------------------------------
 
-local function runAi(model: Model, humanoid: Humanoid, root: BasePart, path: Path, controller: Controller)
+local function runAi(
+	model: Model,
+	humanoid: Humanoid,
+	root: BasePart,
+	path: Path,
+	controller: Controller,
+	barrierId: number
+)
 	-- Stagger so the horde doesn't recompute paths on the same frame.
 	task.wait(math.random() * ZombieConfig.REPATH_INTERVAL)
+
+	-- Breach phase: tear the assigned barrier's planks before entering the arena.
+	if barrierId > 0 then
+		local barrierPos = BarrierService.getPosition(barrierId)
+		while model.Parent and humanoid.Health > 0 and barrierPos and not BarrierService.isBreached(barrierId) do
+			humanoid:MoveTo(barrierPos)
+			if (root.Position - barrierPos).Magnitude <= TEAR_RANGE then
+				controller:RemovePlanks()
+				BarrierService.tearPlank(barrierId)
+				task.wait(TEAR_INTERVAL)
+			else
+				task.wait(ZombieConfig.REPATH_INTERVAL)
+			end
+		end
+	end
 
 	local lastAttack = 0
 
@@ -241,9 +266,22 @@ function ZombieService.spawn(round: number): Model?
 		return nil
 	end
 
-	local nodes = ArenaService.getZombieSpawns()
-	if #nodes == 0 then
-		warn("[ZombieService] no zombie spawn nodes")
+	-- Assign the zombie to a barrier (it breaches there before chasing). Fall back to
+	-- the bare perimeter nodes if no barriers were built.
+	local barrierId = 0
+	local spawnPos: Vector3?
+	local barrierCount = BarrierService.getBarrierCount()
+	if barrierCount > 0 then
+		barrierId = math.random(1, barrierCount)
+		spawnPos = BarrierService.getPosition(barrierId)
+	else
+		local nodes = ArenaService.getZombieSpawns()
+		if #nodes > 0 then
+			spawnPos = nodes[math.random(1, #nodes)].Position
+		end
+	end
+	if not spawnPos then
+		warn("[ZombieService] no spawn position (barriers/nodes missing)")
 		return nil
 	end
 
@@ -259,8 +297,7 @@ function ZombieService.spawn(round: number): Model?
 	humanoid.Health = humanoid.MaxHealth
 	humanoid.WalkSpeed = ZombieConfig.getWalkSpeed(round)
 
-	local node = nodes[math.random(1, #nodes)]
-	model:PivotTo(node.CFrame + Vector3.new(0, SPAWN_HEIGHT_OFFSET, 0))
+	model:PivotTo(CFrame.new(spawnPos + Vector3.new(0, SPAWN_HEIGHT_OFFSET, 0)))
 
 	CollectionService:AddTag(model, Constants.Tags.Zombie)
 	model.Parent = ensureZombiesFolder()
@@ -284,7 +321,7 @@ function ZombieService.spawn(round: number): Model?
 	alive[model] = { trove = trove, controller = controller }
 	aliveCount += 1
 
-	task.spawn(runAi, model, humanoid, root, path, controller)
+	task.spawn(runAi, model, humanoid, root, path, controller, barrierId)
 	return model
 end
 

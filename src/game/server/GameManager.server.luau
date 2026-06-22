@@ -17,6 +17,7 @@ local Server = ServerScriptService:WaitForChild("Server")
 local RemoteHandler = require(Server.RemoteHandler)
 local SessionService = require(Server.Services.SessionService)
 local ArenaService = require(Server.Services.ArenaService)
+local BarrierService = require(Server.Services.BarrierService)
 local ZombieService = require(Server.Services.ZombieService)
 local WeaponService = require(Server.Services.WeaponService)
 local PowerUpService = require(Server.Services.PowerUpService)
@@ -73,6 +74,8 @@ end
 local function start()
 	-- Build the arena: registers collision groups and creates spawn nodes.
 	ArenaService.build()
+	-- Perimeter barriers (zombies breach them before chasing; players repair for points).
+	BarrierService.build()
 	-- Prepare the zombie template + weapons, then start the co-op wave loop.
 	ZombieService.init()
 	WeaponService.init()
