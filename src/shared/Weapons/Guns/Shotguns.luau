@@ -27,6 +27,30 @@ return {
 		reloadTime = 3.0,
 		wallBuyCost = 1500,
 		ammoCost = 500,
+		upgrade = "hades",
+		assets = {},
+	} :: GunDef,
+
+	-- Pack-a-Punch variant.
+	hades = {
+		id = "hades",
+		name = "Hades",
+		category = C.Shotgun,
+		fireMode = F.SingleShot,
+		fireType = T.Shotgun,
+		rpm = 200,
+		damage = 50, -- per pellet
+		headshotMultiplier = 1.5,
+		penetration = 2,
+		penetrationFalloff = 0.9,
+		range = 80,
+		pellets = 10,
+		spread = { base = 5.0, max = 8.0, bloomPerShot = 1.0, recover = 6 },
+		recoil = { vertical = 2.0, horizontal = 0.6, recover = 12 },
+		magSize = 4,
+		reserveAmmo = 64,
+		reloadTime = 3.0,
+		ammoCost = 1000,
 		assets = {},
 	} :: GunDef,
 }
