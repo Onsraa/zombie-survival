@@ -19,6 +19,7 @@ local SessionService = require(Server.Services.SessionService)
 local ArenaService = require(Server.Services.ArenaService)
 local ZombieService = require(Server.Services.ZombieService)
 local WeaponService = require(Server.Services.WeaponService)
+local PowerUpService = require(Server.Services.PowerUpService)
 local WallBuyService = require(Server.Services.WallBuyService)
 local MysteryBoxService = require(Server.Services.MysteryBoxService)
 local PackAPunchService = require(Server.Services.PackAPunchService)
@@ -73,6 +74,8 @@ local function start()
 	-- Prepare the zombie template + weapons, then start the co-op wave loop.
 	ZombieService.init()
 	WeaponService.init()
+	-- Power-ups hook the zombie kill signal (set after ZombieService is ready).
+	PowerUpService.init()
 	-- Buy stations depend on the arena (placement) and weapons (give on purchase).
 	WallBuyService.build()
 	MysteryBoxService.build()

@@ -30,6 +30,7 @@ local Trove = require(ReplicatedStorage.Shared.Util.Trove)
 local ArenaService = require(script.Parent.ArenaService)
 local SessionService = require(script.Parent.SessionService)
 local ZombieControllerModule = require(script.Parent.ZombieController)
+local CombatModifiers = require(script.Parent.CombatModifiers)
 
 local ZombieController = ZombieControllerModule.ZombieController
 type Controller = ZombieControllerModule.ZombieController
@@ -56,6 +57,7 @@ local template: Model? = nil
 local zombiesFolder: Folder? = nil
 local alive: { [Model]: ZombieRecord } = {}
 local aliveCount = 0
+local killListener: ((position: Vector3, killer: Player?) -> ())? = nil
 
 -- ---- helpers --------------------------------------------------------------
 
@@ -283,14 +285,23 @@ function ZombieService.damageZombie(model: Model, amount: number, killer: Player
 		return
 	end
 
+	if CombatModifiers.isInstaKill() then
+		amount = humanoid.MaxHealth -- Insta-Kill power-up: any hit is lethal
+	end
 	humanoid:TakeDamage(amount)
 
 	if killer then
-		SessionService.addPoints(killer, ZombieConfig.POINTS_PER_HIT)
+		local mult = CombatModifiers.getPointsMultiplier() -- Double Points power-up
+		SessionService.addPoints(killer, ZombieConfig.POINTS_PER_HIT * mult)
 		if humanoid.Health <= 0 then
-			SessionService.addPoints(killer, ZombieConfig.POINTS_PER_KILL)
+			SessionService.addPoints(killer, ZombieConfig.POINTS_PER_KILL * mult)
 			SessionService.addKill(killer)
 		end
+	end
+
+	if humanoid.Health <= 0 and killListener then
+		local root = getRoot(model)
+		killListener(if root then root.Position else Vector3.zero, killer)
 	end
 end
 
@@ -309,6 +320,27 @@ function ZombieService.explode(position: Vector3, radius: number, damage: number
 		end
 	end
 	return count
+end
+
+-- Register a single listener fired when a zombie dies (position, killer?). Lets
+-- PowerUpService roll drops without ZombieService having to depend on it.
+function ZombieService.setKillListener(fn: (position: Vector3, killer: Player?) -> ())
+	killListener = fn
+end
+
+-- Kill every alive zombie at once (Nuke power-up). Bypasses points + the kill listener;
+-- the caller awards the flat nuke bonus. Snapshots keys first (death mutates `alive`).
+function ZombieService.nukeKill()
+	local models: { Model } = {}
+	for model in alive do
+		table.insert(models, model)
+	end
+	for _, model in models do
+		local humanoid = getHumanoid(model)
+		if humanoid and humanoid.Health > 0 then
+			humanoid:TakeDamage(humanoid.MaxHealth)
+		end
+	end
 end
 
 function ZombieService.getAliveCount(): number
