@@ -34,6 +34,7 @@ local bursting = false
 local magAmmo = 0
 local reserveAmmo = 0
 local reloading = false
+local fireRateMult = 1 -- Double Tap perk; server-authoritative, mirrored here for cadence
 
 -- Ask the server to reload (server re-validates). Used by manual R and auto-reload.
 local function requestReload()
@@ -57,7 +58,7 @@ local function fireOnce()
 		return
 	end
 	local now = os.clock()
-	if now - lastFire < 60 / gun.rpm then
+	if now - lastFire < 60 / gun.rpm / fireRateMult then
 		return
 	end
 	lastFire = now
@@ -78,7 +79,7 @@ local function doBurst(gun: GunDef)
 	task.spawn(function()
 		for _ = 1, gun.burstCount or 3 do
 			fireOnce()
-			task.wait(60 / gun.rpm)
+			task.wait(60 / gun.rpm / fireRateMult)
 		end
 		bursting = false
 	end)
@@ -129,6 +130,9 @@ function WeaponController.start()
 			end
 			if type(state.reserveAmmo) == "number" then
 				reserveAmmo = state.reserveAmmo
+			end
+			if type(state.fireRateMult) == "number" then
+				fireRateMult = state.fireRateMult
 			end
 			reloading = state.reloading == true
 			-- Auto-reload the instant the mag runs dry and there's reserve to load.

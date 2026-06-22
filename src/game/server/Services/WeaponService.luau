@@ -42,6 +42,10 @@ type WeaponState = {
 local WeaponService = {}
 
 local states: { [Player]: WeaponState } = {}
+-- Per-player perk modifiers (Speed Cola / Double Tap). Persist across weapon swaps;
+-- cleared by PerkService on respawn. Default 1 = no modifier.
+local reloadMultipliers: { [Player]: number } = {}
+local fireRateMultipliers: { [Player]: number } = {}
 
 local function broadcastState(player: Player)
 	local state = states[player]
@@ -55,6 +59,7 @@ local function broadcastState(player: Player)
 		reserveAmmo = state.reserveAmmo,
 		magSize = gun and gun.magSize or 0,
 		reloading = state.reloading,
+		fireRateMult = fireRateMultipliers[player] or 1, -- Double Tap (client matches cadence)
 	})
 end
 
@@ -105,7 +110,8 @@ local function onShoot(player: Player, payload: any)
 	end
 
 	local now = os.clock()
-	if now - state.lastFire < Ballistics.rpmToCooldown(gun.rpm) then
+	local cooldown = Ballistics.rpmToCooldown(gun.rpm) / (fireRateMultipliers[player] or 1)
+	if now - state.lastFire < cooldown then
 		return
 	end
 
@@ -152,7 +158,7 @@ local function onReload(player: Player)
 	state.reloading = true
 	broadcastState(player)
 
-	task.delay(gun.reloadTime, function()
+	task.delay(gun.reloadTime * (reloadMultipliers[player] or 1), function()
 		if states[player] ~= state then
 			return -- player left or re-armed
 		end
@@ -199,6 +205,17 @@ function WeaponService.refillAmmo(player: Player)
 	broadcastState(player)
 end
 
+-- Perk modifiers (set by PerkService). reload < 1 = faster reload (Speed Cola);
+-- fireRate > 1 = faster fire (Double Tap). Reset to 1 to remove the perk.
+function WeaponService.setReloadMultiplier(player: Player, multiplier: number)
+	reloadMultipliers[player] = multiplier
+end
+
+function WeaponService.setFireRateMultiplier(player: Player, multiplier: number)
+	fireRateMultipliers[player] = multiplier
+	broadcastState(player) -- push the new cadence so the client matches it
+end
+
 function WeaponService.init()
 	RemoteHandler.createRemote(Remotes.Names.WeaponState, "Event")
 	RemoteHandler.createRemote(Remotes.Names.ShotResult, "Event")
@@ -235,6 +252,8 @@ function WeaponService.init()
 	end
 	Players.PlayerRemoving:Connect(function(player)
 		states[player] = nil
+		reloadMultipliers[player] = nil
+		fireRateMultipliers[player] = nil
 	end)
 
 	print("[WeaponService] Initialized")
