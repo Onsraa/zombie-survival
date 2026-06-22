@@ -19,12 +19,12 @@
 ]]
 
 local ZombieAnimations: { [string]: string } = {
-	ZombieWalk = "", -- arms-forward walk (the main one)
-	ZombieRun = "",
-	ZombieCrawl = "",
-	ZombieAttackStanding = "",
-	ZombieAttackCrawling = "",
-	ZombieRemovePlanks = "",
+	ZombieWalk = "rbxassetid://74301920399361", -- arms-forward walk (the main one)
+	ZombieRun = "rbxassetid://114097433763257",
+	ZombieCrawl = "rbxassetid://116854462238266",
+	ZombieAttackStanding = "rbxassetid://87173576296276",
+	ZombieAttackCrawling = "rbxassetid://118970271924953",
+	ZombieRemovePlanks = "rbxassetid://93581905577093",
 	ZombieDeath = "", -- collapse-on-floor; author + upload for an explicit death animation
 }
 
