@@ -23,6 +23,7 @@ local PowerUpService = require(Server.Services.PowerUpService)
 local WallBuyService = require(Server.Services.WallBuyService)
 local MysteryBoxService = require(Server.Services.MysteryBoxService)
 local PackAPunchService = require(Server.Services.PackAPunchService)
+local PerkService = require(Server.Services.PerkService)
 local RoundService = require(Server.Services.RoundService)
 local Remotes = require(ReplicatedStorage.Shared.Remotes)
 
@@ -76,10 +77,12 @@ local function start()
 	WeaponService.init()
 	-- Power-ups hook the zombie kill signal (set after ZombieService is ready).
 	PowerUpService.init()
+	PerkService.init()
 	-- Buy stations depend on the arena (placement) and weapons (give on purchase).
 	WallBuyService.build()
 	MysteryBoxService.build()
 	PackAPunchService.build()
+	PerkService.build()
 	RoundService.start()
 	print("[GameManager] Started")
 end
