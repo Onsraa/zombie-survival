@@ -75,6 +75,11 @@ Actionable, near-term. Older items move to "Done". See ROADMAP.md for the big pi
 - [x] Movement stances (`MovementController`): Stand 16 / Crouch `C` 8 / Prone `X` 4 / Sprint hold `LeftShift` 22, sprint blocked while crouched/prone; `CameraOffset` view drop; ContextActionService touch buttons for mobile. Verified live via simulated input
 - [ ] Asset gap: true third-person crouch/prone *pose* + gun viewmodel need rig animations (mechanics complete; poses pending upload, same gap as zombie anims)
 
+## Latest fixes (ammo · anims · death) ✅ — MCP-verified
+- [x] Weapon fires off authoritative `WeaponState`: client gates on ammo/reloading (no tracer/effect when empty or reloading) + optimistic mag decrement + **auto-reload** on empty. Verified: mag 8→0 auto-reloads to 8 (reserve 80→72), server never goes negative. Server unchanged
+- [x] Zombie animations via uploaded AnimationIds — new `shared/Config/ZombieAnimations.luau` (fill after exporting); `ZombieController` prefers ids, falls back to the committed KeyframeSequence for Studio preview. Fixes arms-forward `ZombieWalk` not posing at runtime (temp KS id loads a track but doesn't pose). **User action: export the 6–7 clips, paste ids**
+- [x] Explicit immediate death: `BreakJointsOnDeath=false` + `ZombieController:Collapse()` → scripted ragdoll (loosen R6 joints incl. `Root` + drop impulse), or a `Death` animation if its id is set. Verified live + fresh: all 6 core joints loosen instantly, killing the ~0.2s ambiguous flop
+
 ## Next options
 - [ ] Wall-buys (Sprint 4b): arena buy spots + Buy remote → points SPEND
 - [ ] Upload the 6 zombie animations → AnimationId (production playback)

@@ -75,11 +75,13 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
 - **`ZombieController`** (server, one per zombie): animation playback + gore. The head detaches near death
   (< 15% HP); the **legs are blown off by explosions** (`ZombieService.explode` → `:DetachLegs()`),
   switching the zombie to crawling. Crawl is **impact-driven**, never a health threshold. Ragdolled parts
-  clean up after a delay.
-- **Animations**: the 6 `Assets/Animations/*` are **KeyframeSequences**. Played via
-  `KeyframeSequenceProvider` for **Studio preview only**. For a published game, upload them and reference
-  as `Animation` objects (with `AnimationId`). The controller loads either form, pcall-guarded, so a
-  missing animation never breaks a zombie.
+  clean up after a delay. On death it does an explicit **ragdoll collapse** (loosens the R6 joints + a drop
+  impulse; `BreakJointsOnDeath` is off) — or plays a `Death` animation if that id is set — so the kill reads
+  instantly instead of the default ~0.2s gravity flop.
+- **Animations**: playback prefers uploaded `AnimationId`s from `Config/ZombieAnimations`; any blank id falls
+  back to the committed `KeyframeSequence` via `KeyframeSequenceProvider` (**Studio preview only** — the temp
+  id loads a track but won't pose the rig in a published game until the id is filled). Resilient/pcall-guarded
+  so a missing clip never breaks a zombie.
 - **`RoundService`** (server): co-op wave state machine; broadcasts `RoundState` (change-based) for the HUD.
 - **Weapons (modular, data-driven)**: guns are `GunDef` entries in `shared/Weapons/Guns/*` (by category),
   aggregated by `GunRegistry`. Each has fire mode, RPM, damage, penetration, **spread** (an accuracy cone
@@ -93,7 +95,9 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
   **blasts the impact zone** via `explode` — AoE damage + leg-detach). First shot is exact (`spread.base = 0`
   on standard guns). Client sends `{ origin, direction }`; server stays authoritative, awards points via
   `damageZombie`.
-- **`WeaponController` / `WeaponEffects`** (client): input + fire modes (auto/semi/single/burst). There is
+- **`WeaponController` / `WeaponEffects`** (client): input + fire modes (auto/semi/single/burst). It mirrors
+  the authoritative `WeaponState` (ammo/reloading) so it never fires effects the server would reject (empty
+  or reloading) and **auto-reloads** when the mag runs dry; the server stays the source of truth. There is
   **no recoil camera kick** — accuracy is the server's spread; a viewmodel animation will supply visual kick
   once gun models exist. `WeaponEffects` draws cosmetic tracers/impacts. `CameraController` locks first-person
   and hides the OS cursor; the crosshair sits at the **true viewport center** (`ScreenInsets = None`) so it
