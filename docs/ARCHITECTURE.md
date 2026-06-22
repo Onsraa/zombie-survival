@@ -104,6 +104,11 @@ default.project.json (Game place)   [lobby.project.json added in Epic 2]
     variants; wonder weapons rare), a short reveal on the label, then `giveWeapon`.
   - **`PackAPunchService`** — 5000-point upgrade of the held gun to its `GunDef.upgrade` data variant
     (Skullcrusher, Hades, Mustang & Sally, …); upgraded guns have no `upgrade`, so they can't be re-PaP'd.
+- **`PowerUpService`** + **`CombatModifiers`** (server): on a zombie kill (via `ZombieService`'s kill hook) a
+  small chance drops a floating pickup; the first touch fires a team-wide effect — Max Ammo (refill all),
+  Nuke (`ZombieService.nukeKill` + points), Insta-Kill and Double Points (timed flags in `CombatModifiers`,
+  which `ZombieService.damageZombie` reads each hit). A `PowerUp` remote drives the HUD banner.
+  `CombatModifiers` is a leaf module so ZombieService/PowerUpService share it without a require cycle.
 - **`WeaponController` / `WeaponEffects`** (client): input + fire modes (auto/semi/single/burst). It mirrors
   the authoritative `WeaponState` (ammo/reloading) so it never fires effects the server would reject (empty
   or reloading) and **auto-reloads** when the mag runs dry; the server stays the source of truth. There is

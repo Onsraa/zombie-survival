@@ -14,7 +14,7 @@ Per-feature spec + status. Status: ✅ done · 🚧 in progress · ⬜ planned.
 | Player movement | 1 | First-person stances: sprint (LeftShift) · crouch (C) · prone (X); per-stance WalkSpeed + camera drop; mobile touch buttons. Pose animations pending | ✅ (mechanics) |
 | Lobby & parties | 2 | Social hub place; create/join/leave parties; ready-up; queue | ⬜ |
 | Matchmaking / reserved servers | 2 | ReserveServer + TeleportAsync(+TeleportData); seat party in Game place; retry/rejoin | ⬜ |
-| Perks + Power-ups | 3 | Perk machines; dropped power-ups (Max Ammo, Insta-Kill, Nuke, Double Points) | ⬜ |
+| Perks + Power-ups | 3 | **Power-ups** ✅: drop on kill → team-wide Max Ammo / Nuke / Insta-Kill / Double Points (timed), HUD banner. Perk machines still pending | 🚧 |
 | Mystery Box + Pack-a-Punch | 3 | Box: 950-pt weighted random weapon roll (wonder rare). PaP: 5000-pt upgrade to a data-variant gun (Skullcrusher/Hades/…). Shared `BuyStation`, server-auth | ✅ |
 | Barriers / windows | 3 | Zombies breach boarded windows; players repair for points | ⬜ |
 | Down & revive | 3 | Downed state, bleed-out timer, teammate revive, co-op fail when all down | ⬜ |
